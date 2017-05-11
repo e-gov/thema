@@ -8,12 +8,11 @@
 // MAA-AMETi aluskaardid
   // ortofoto
 var orthotile = L.tileLayer(
-    'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{y}.png', {
+    'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{-y}.png', {
       minZoom:0,
       maxZoom: 13,
       continuousWorld: false,
       noWrap: false,
-      tms: true,
       attribution: 'Ortofoto: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
     }
   ),
@@ -30,12 +29,11 @@ var orthotile = L.tileLayer(
   // aluskaart
 
   kaarttile = L.tileLayer(
-    'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{y}.png', {
+    'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{-y}.png', {
       minZoom:0,
       maxZoom: 14,
       continuousWorld: false,
       noWrap: false,
-      tms: true,
       attribution: 'Aluskaart: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
     }
   ),
@@ -54,20 +52,18 @@ var orthotile = L.tileLayer(
   // hübriid (ortofoto + hybriid)
 
   hybrid_orthotile = L.tileLayer(
-    'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{y}.png', {
+    'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{-y}.png', {
       minZoom : 0,
       maxZoom : 13,
       continuousWorld : false,
-      tms : true,
       attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
     }
   ),
   hybrid_texttile = L.tileLayer(
-    'http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{y}.png', {
+    'http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{-y}.png', {
       minZoom : 0,
       maxZoom : 13,
       continuousWorld : false,
-      tms : true,
       attribution : 'Ortofoto/Hübriidkaart: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
     }
   ),
@@ -98,12 +94,11 @@ var orthotile = L.tileLayer(
   // reljeef
 
   reljeeftile = new L.tileLayer(
-    'http://tiles.maaamet.ee/tm/s/1.0.0/reljeef/{z}/{x}/{y}.png', {
+    'http://tiles.maaamet.ee/tm/s/1.0.0/reljeef/{z}/{x}/{-y}.png', {
       minZoom:0,
       maxZoom: 13,
       continuousWorld: false,
       noWrap: false,
-      tms: true,
       attribution : 'Reljeef: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
     }
   ),
@@ -120,12 +115,11 @@ var orthotile = L.tileLayer(
 // KEMITi aluskaardid
   // mustvalge aluskaart
   blacktile = L.tileLayer(
-    'http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/baasandmed:black@EPSG:3301@png/{z}/{x}/{y}.png', {
+    'http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/baasandmed:black@EPSG:3301@png/{z}/{x}/{-y}.png', {
       minZoom:0,
       maxZoom: 14,
       continuousWorld: false,
       noWrap: false,
-      tms: true,
       attribution: 'MV aluskaart - andmed: <a href="http://maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-amet</a>, <a href="http://keskkonnaagentuur.ee" target="_blank" rel="noopener noreferrer">Keskkonnaregister (KAUR)</a> ning <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>; teostus <a href="https://github.com/e-gov/kem-gsavalik/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">KEMIT ja kaastöölised</a>'
     }
   ),
@@ -180,12 +174,12 @@ function addBasemapToControl(key) {
 
 
 function updateMap(options) {
-	var title = options.title != undefined ? options.title : document.title,
-			minZoom = options.minZoom != undefined ? options.minZoom : map.getMinZoom(),
-			maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
-			zoom = options.zoom != undefined ? options.zoom : minZoom;
-	document.title = title;
-	map.setMinZoom(minZoom);
-	map.setMaxZoom(maxZoom);
-	map.setZoom(zoom);
+  var title = options.title != undefined ? options.title : document.title,
+      minZoom = options.minZoom != undefined ? options.minZoom : map.getMinZoom(),
+      maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
+      zoom = options.zoom != undefined ? options.zoom : minZoom;
+  document.title = title;
+  map.setMinZoom(minZoom);
+  map.setMaxZoom(maxZoom);
+  map.setZoom(zoom);
 }
