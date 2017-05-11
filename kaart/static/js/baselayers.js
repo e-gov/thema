@@ -40,7 +40,6 @@ var orthotile = L.tileLayer(
   kaartwms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/kaart', {
       continuousWorld : false,
-      tms: true,
       layers: 'CORINE,BAASKAART,KAART24,HALDUSPIIRID,TEED,KYLAD,KAART24L',
       minZoom: 14,
       maxZoom: 20,
