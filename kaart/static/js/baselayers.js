@@ -180,12 +180,12 @@ function addBasemapToControl(key) {
 
 
 function updateMap(options) {
-	var title = options.title != undefined ? options.title : document.title,
-			minZoom = options.minZoom != undefined ? options.minZoom : map.getMinZoom(),
-			maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
-			zoom = options.zoom != undefined ? options.zoom : minZoom;
-	document.title = title;
-	map.setMinZoom(minZoom);
-	map.setMaxZoom(maxZoom);
-	map.setZoom(zoom);
+  var title = options.title != undefined ? options.title : document.title,
+      minZoom = options.minZoom != undefined ? options.minZoom : map.getMinZoom(),
+      maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
+      zoom = options.zoom != undefined ? options.zoom : minZoom;
+  document.title = title;
+  map.setMinZoom(minZoom);
+  map.setMaxZoom(maxZoom);
+  map.setZoom(zoom);
 }

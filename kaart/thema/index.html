@@ -1,42 +1,42 @@
 <!DOCTYPE html>
 <html lang="et">
-	<head>
-		<meta charset="utf-8">
-		<title>Teemakaart: blah</title>
-		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" />
-		<link rel="stylesheet" type="text/css" href="../static/css/thema.css" />
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" type="text/javascript"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
+  <head>
+    <meta charset="utf-8">
+    <title>Teemakaart: blah</title>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/thema.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.1/proj4leaflet.min.js" type="text/javascript"></script>
     <script src="../static/js/baselayers.js" type="text/javascript"></script>
-	</head>
-	<body>
-		<div id="map">
+  </head>
+  <body>
+    <div id="map">
 
-		</div>
-		<script>
-			// Aluskaardi tailid on L-EST'97s. seadistame kaardi.
-			var crs = new L.Proj.CRS(
-					'EPSG:3301',
-					'+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
-					{
-						resolutions: [4000,2000,1000,500,250,125,62.5,31.25,15.625,7.8125,3.90625,1.953125,0.9765625,0.48828125,0.244140625,0.1220703125,0.06103515625,0.030517578125,0.0152587890625,0.00762939453125,0.003814697265625],
-						transformation: new L.Transformation(1, -40500, -1, 7017000.000000),
-						//origin: [40500, 5993000.000000],
-						bounds: L.bounds(L.point(40500, 5993000.000000), L.point(1064500.000000, 7017000.000000))
-					}
-				),
-				//Kaart ise, mis läheb div.id = "map" elementi
-				map = L.map(
-					'map', {
-						crs: crs,
-						center: L.latLng(58.6625,25.3125),
-						zoom:0,
-						minZoom:0,
-						maxZoom:14,
-						maxBounds: L.latLngBounds([[56.25, 19.6875],[61.875,30.9375]]),
-					}
-				);
+    </div>
+    <script>
+      // Aluskaardi tailid on L-EST'97s. seadistame kaardi.
+      var crs = new L.Proj.CRS(
+          'EPSG:3301',
+          '+proj=lcc +lat_1=59.33333333333334 +lat_2=58 +lat_0=57.51755393055556 +lon_0=24 +x_0=500000 +y_0=6375000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+          {
+            resolutions: [4000,2000,1000,500,250,125,62.5,31.25,15.625,7.8125,3.90625,1.953125,0.9765625,0.48828125,0.244140625,0.1220703125,0.06103515625,0.030517578125,0.0152587890625,0.00762939453125,0.003814697265625],
+            transformation: new L.Transformation(1, -40500, -1, 7017000.000000),
+            //origin: [40500, 5993000.000000],
+            bounds: L.bounds(L.point(40500, 5993000.000000), L.point(1064500.000000, 7017000.000000))
+          }
+        ),
+        //Kaart ise, mis läheb div.id = "map" elementi
+        map = L.map(
+          'map', {
+            crs: crs,
+            center: L.latLng(58.6625,25.3125),
+            zoom:0,
+            minZoom:0,
+            maxZoom:14,
+            maxBounds: L.latLngBounds([[56.25, 19.6875],[61.875,30.9375]]),
+          }
+        );
         var baselayers = {};
         var overlays = {};
         var layerControl = L.control.layers(baselayers, overlays);
@@ -47,11 +47,11 @@
             return response.json();
           })
           .then(function(config) {
-						updateMap(config.map);
+            updateMap(config.map);
             initBasemaps(config.basemaps);
           });
 
 
     </script>
-	</body>
+  </body>
 </html>
