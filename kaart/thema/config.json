@@ -1,0 +1,4 @@
+{
+  "map": {"minZoom":3, "maxZoom":14, "title":"Minu teemakaart"},
+  "basemaps":["ortho","kaart"]
+}

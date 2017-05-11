@@ -1,0 +1,36 @@
+﻿#map {
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	width: 100%; 
+	height: 100%;
+}
+
+.leaflet-popup-content { 
+	max-height: 200px; 
+	overflow: auto;
+	width: 300px;
+	padding: 5px;
+}	
+	
+.leaflet-feature-info-tab  th, td {
+	border: 1px solid #e5e5e5;
+	border-collapse: collapse;
+	font-family: arial;
+	font-size: 90%;
+	color: #333333;
+	text-align: center;
+}
+
+.leaflet-feature-info-tab  th{
+	background-color: #50A4ED;
+	font-weight:bold;
+}
+
+.leaflet-feature-info-tab  {
+	width:100%;
+}
+
+.leaflet-popup-tip {
+	height: 0px;
+}
