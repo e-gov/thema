@@ -1,18 +1,18 @@
 ﻿#map {
-	position: absolute; 
-	top: 0; 
-	left: 0; 
-	width: 100%; 
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
 	height: 100%;
 }
 
-.leaflet-popup-content { 
-	max-height: 200px; 
+.leaflet-popup-content {
+	max-height: 200px;
 	overflow: auto;
 	width: 300px;
 	padding: 5px;
-}	
-	
+}
+
 .leaflet-feature-info-tab  th, td {
 	border: 1px solid #e5e5e5;
 	border-collapse: collapse;
@@ -33,4 +33,21 @@
 
 .leaflet-popup-tip {
 	height: 0px;
+}
+
+.hover-Polygon {
+	fill: black;
+	fill-opacity: 0.5;
+	cursor: default;
+    stroke-width: 0.7;
+}
+
+.hover-LineString {
+	stroke: black;
+	stroke-opacity: 0.5;
+	cursor: default;
+}
+
+.hover-Point {
+	cursor:default;
 }
