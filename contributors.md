@@ -1,3 +1,3 @@
-thema teemakaardirakenduse loomisele on aidanud kaasa:
+**thema** teemakaardirakenduse loomisele on kaasa aidanud:
 
-<sinu nimi/tunnus/initsiaalid> ( <sinu-kontakt-kui-soovid> )
+- [Tormi Tabor](https://github.com/tormi)
