@@ -5,18 +5,18 @@
         {
             "layername": "Näidisteemakiht 1",
             "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/eelis:kr_puurkaev@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
-            "type": "geojson",
+            "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": true,
+            "isVisible": false,
             "minZoom": 5,
             "maxZoom": 10
         },
         {
             "layername": "Näidisteemakiht 2",
             "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:ristipuud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
-            "type": "geojson",
+            "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": false,
+            "isVisible": true,
             "minZoom": 3
         }
     ]

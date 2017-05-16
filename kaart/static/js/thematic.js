@@ -438,7 +438,7 @@ L.tileLayer.geoJson = function(urlTemplate, options, geojsonOptions) {
 }
 
 var _thematicLayers = {
-    "geojson": {
+    "geojson.tile": {
         "constructor": L.tileLayer.geoJson,
         "options": {
             "unique": function (feature) {
@@ -467,7 +467,7 @@ function initThematicLayer(thema) {
     var urlTemplate = thema.url,
         type = thema.type,
         layername = thema.layername,
-        isVisible = thema.isVisible,
+        isVisible = thema.isVisible !== undefined ? thema.isVisible : false,
         minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
         maxZoom = thema.maxZoom !== undefined ? thema.maxZoom : map.getMaxZoom(),
         constr = _thematicLayers[type]["constructor"],

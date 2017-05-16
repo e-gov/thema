@@ -50,3 +50,27 @@ Näiteks võib `basemaps` olla seadistatud kui
 
 Selline seadistus lisab kaardi aluskaartide valikuse kaardikihid `ortho` ja
 `black`. Viimane neist määratakse vaikimisi isselülitatauks.
+
+## thema
+Loend kaardirakenduses kuvatavatest teemakihid. Esitatakse objektide loeteluna,
+kus üks kanne esindab ühte teemakihti:
+
+`{"thema": [{..}, {..}, {..}]}`
+
+Üht teemakihti kirjeldatavad parameetrid:
+
+- `url`: URL, millelt selle kihi andmeid päritakse. Võib olla URL ise või
+URLi template.
+- `type`: määrab klassi, millega selle kihi kuva/interaktsioon läbi viiakse.
+Võimalikud väärtused: `"geojson.tile"` (kahheldatud geojson), ...
+- `style`: @TODO
+- `srid`: andmete koordinaatsüsteemi tunnus (EPSG kood). Hetkel ignoreerime ja
+eeldame, et kõik andmed on Eesti riiklikus L-EST'97.
+- `layername`: kihi nimetus, mis kasutajale kuvatakse. Vaikeväärtus puudub.
+- `isVisible`: valikuline, `true`|`false` lipuke, mis määrab, kas kaardikihi nähtavus on
+automaatselt sisse lülitatud. Kui `isVisible` puudub, sel juhul kihi
+nähtavust automaatselt sisse ei lülita.
+- `minZoom`: valikuline, määrab kaardikihi kuvamise minimaalse zoomitaseme.
+Vaikimisi loetakse kaardirakenduse küljest.
+- `maxZoom`: valikuline, määrab kaardikihi kuvamise maksimaalse zoomitaseme.
+Vaikimisi loetakse kaardirakenduse küljest.
