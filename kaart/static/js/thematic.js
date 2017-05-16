@@ -97,7 +97,7 @@ L.SVG.Tile = L.SVG.extend({
         } else {
             iconUrl = '../static/img/default-icon.png';
         }
-            icon.setAttributeNS('http://www.w3.org/1999/xlink', 'href', iconUrl);
+        icon.setAttributeNS('http://www.w3.org/1999/xlink', 'href', iconUrl);
 
         if (style.iconSize) {
             iconSize = style.iconSize;
@@ -127,6 +127,8 @@ L.SVG.Tile = L.SVG.extend({
     _getContainerResize: function() {
         var markerBounds = this._getMarkerBounds();
         if (markerBounds.min && markerBounds.max) {
+            var dx = this._iconSize.x,
+                dy = this._iconSize.y;
             var minx = 0, miny = 0, maxx = 0, maxy = 0;
             if (markerBounds.min.x < 0) {
                 minx = markerBounds.min.x;
@@ -134,11 +136,11 @@ L.SVG.Tile = L.SVG.extend({
             if (markerBounds.min.y < 0) {
                 miny = markerBounds.min.y;
             }
-            if (markerBounds.max.x > this._size.x) {
-                maxx = this._size.x - markerBounds.max.x;
+            if ((markerBounds.max.x + dx) > this._size.x) {
+                maxx = this._size.x - (markerBounds.max.x + dx);
             }
-            if (markerBounds.max.y > this._size.y) {
-                maxy = this._size.y - markerBounds.max.y;
+            if ((markerBounds.max.y + dy) > this._size.y) {
+                maxy = this._size.y - (markerBounds.max.y + dy);
             }
             return Math.min(...[minx, miny, maxx, maxy]);
         } else {
