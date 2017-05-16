@@ -11,6 +11,6 @@ teemakaardirakendused.
 [proj4Leaflet](https://github.com/kartena/Proj4Leaflet)
 - ...
 
-## Harude eelvaated
-- [master](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/master/kaart/thema/index.html)
-- [devel](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/devel/kaart/thema/index.html)
+## Näited
+- e-gov/thema [master](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/master/kaart/thema/index.html) haru
+- e-gov/thema [devel](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/devel/kaart/thema/index.html) haru
