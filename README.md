@@ -12,5 +12,5 @@ teemakaardirakendused.
 - ...
 
 ## Näited
-- e-gov/thema [master](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/master/kaart/thema/index.html) haru
+- e-gov/thema [master](https://e-gov.github.io/thema/kaart/thema/) haru
 - e-gov/thema [devel](http://htmlpreview.github.io/?https://github.com/e-gov/thema/blob/devel/kaart/thema/index.html) haru
