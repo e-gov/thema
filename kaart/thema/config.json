@@ -18,6 +18,14 @@
             "srid": 3301,
             "isVisible": true,
             "minZoom": 3
+        },
+        {
+            "layername": "Kohalik kiht",
+            "url": "./data/example/kohalik/{z}/{x}/{-y}.json",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "minZoom": 3
         }
     ]
 }

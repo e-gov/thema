@@ -1,0 +1,5 @@
+{"type":"FeatureCollection", "features":[
+    {"type":"Feature", "id":"1.1", "geometry":{"type":"Point","coordinates":[552500, 6505000]}, "properties":{}},
+    {"type":"Feature", "id":"1.2", "geometry":{"type":"Point","coordinates":[680500, 6505000]}, "properties":{}}
+    ],
+"crs":{"type":"name","properties":{"name":"urn:ogc:def:crs:EPSG::3301"}}}
