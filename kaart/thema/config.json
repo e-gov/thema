@@ -10,7 +10,38 @@
             "isVisible": false,
             "minZoom": 5,
             "maxZoom": 10,
-            "attribution": "Puurkaevud: CC BY 4.0 EELIS (Eesti Looduse Infosüsteem - Keskkonnaregister) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+            "attribution": "Puurkaevud: CC BY 4.0 EELIS (Eesti Looduse Infosüsteem - Keskkonnaregister) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "style": {
+                "type": "classify",
+                "key": "staatus",
+                "values": {
+                    "Töötav": {
+                        "iconUrl": "../static/img/o-gray-asparagus.svg",
+                        "iconSize": [10, 10],
+                        "iconAnchor": [-5, -5]
+                    },
+                    "Likvideeritav": {
+                        "iconUrl": "../static/img/o-darkblue-gray.svg",
+                        "iconSize": [10, 10],
+                        "iconAnchor": [-5, -5]
+                    },
+                    "Kasutuskõlbmatu": {
+                        "iconUrl": "../static/img/o-darkpurple.svg",
+                        "iconSize": [10, 10],
+                        "iconAnchor": [-5, -5]
+                    },
+                    "Konserveeritud": {
+                        "iconUrl": "../static/img/o-redwood.svg",
+                        "iconSize": [10, 10],
+                        "iconAnchor": [-5, -5]
+                    },
+                    "Rekonstrueeritav": {
+                        "iconUrl": "../static/img/o-burleywood.svg",
+                        "iconSize": [10, 10],
+                        "iconAnchor": [-5, -5]
+                    }
+                }
+            }
         },
         {
             "layername": "Näidisteemakiht 2",
@@ -22,7 +53,7 @@
             "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>",
             "style": {
                 "type" : "default",
-                "options": {
+                "values": {
                     "fillColor": "#C6CA53",
                     "fillOpacity": 1,
                     "color": "#7B7263",

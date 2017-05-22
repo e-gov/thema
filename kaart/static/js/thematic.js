@@ -95,7 +95,7 @@ L.SVG.Tile = L.SVG.extend({
         if (style.iconUrl) {
             iconUrl = style.iconUrl;
         } else {
-            iconUrl = '../static/img/default-icon.png';
+            iconUrl = '../static/img/default-icon.svg';
         }
         icon.setAttributeNS('http://www.w3.org/1999/xlink', 'href', iconUrl);
 
@@ -402,7 +402,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             throw(e);
         }
     },
-    
+
     _mkFeatureOptions: function (feat, style) {
         if (typeof(style) === 'function') {
             var style = style(feat, this);
@@ -458,8 +458,15 @@ var _thematicLayers = {
                 return feature;
             },
             "style": function(feature, layer) {
-                // WHAA??? :S
-                return layer.options.style.options;
+                var style = layer.options.style;
+                if (style.type == "default") {
+                    return layer.options.style.values;
+                } else if (style.type == "classify") {
+                    var key = layer.options.style.key,
+                        val = feature.properties[key];
+                    return layer.options.style.values[val] || {};
+                }
+                return {};
             }
         }
     }
