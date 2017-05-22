@@ -9,7 +9,8 @@
             "srid": 3301,
             "isVisible": false,
             "minZoom": 5,
-            "maxZoom": 10
+            "maxZoom": 10,
+            "attribution": "Puurkaevud: CC BY 4.0 EELIS (Eesti Looduse Infosüsteem - Keskkonnaregister) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
         },
         {
             "layername": "Näidisteemakiht 2",
@@ -17,7 +18,8 @@
             "type": "geojson.tile",
             "srid": 3301,
             "isVisible": true,
-            "minZoom": 3
+            "minZoom": 3,
+            "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>"
         },
         {
             "layername": "Kohalik kiht",
@@ -25,7 +27,8 @@
             "type": "geojson.tile",
             "srid": 3301,
             "isVisible": true,
-            "minZoom": 3
+            "minZoom": 3,
+            "maxZoom": 3
         }
     ]
 }

@@ -470,6 +470,7 @@ function initThematicLayer(thema) {
         isVisible = thema.isVisible !== undefined ? thema.isVisible : false,
         minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
         maxZoom = thema.maxZoom !== undefined ? thema.maxZoom : map.getMaxZoom(),
+        attribution = thema.attribution,
         constr = _thematicLayers[type]["constructor"],
         opts = _thematicLayers[type]["options"],
         typeOpts = _thematicLayers[type]["typeOptions"];
@@ -478,7 +479,9 @@ function initThematicLayer(thema) {
     }
     opts.minZoom = minZoom;
     opts.maxZoom = maxZoom;
-
+    if (attribution !== undefined) {
+        opts.attribution = attribution;
+    }
     // @TODO: loe ja rakenda teemakihi stiilid konfigust.
 
     var _layer = constr(urlTemplate, opts, typeOpts);
