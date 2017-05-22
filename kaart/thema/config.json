@@ -26,7 +26,7 @@
                         "iconAnchor": [-5, -5]
                     },
                     "Kasutuskõlbmatu": {
-                        "iconUrl": "../static/img/o-darkpurple.svg",
+                        "iconUrl": "../static/img/o-dark-purple.svg",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     },
