@@ -100,6 +100,8 @@ L.SVG.Tile = L.SVG.extend({
         icon.setAttributeNS('http://www.w3.org/1999/xlink', 'href', iconUrl);
 
         if (style.iconSize) {
+            // @TODO: NB! ikooni suurus ei pruugi olla sama kihi piires sama
+            this._iconSize = L.point(style.iconSize);
             iconSize = style.iconSize;
         } else {
             iconSize = [this._iconSize.x,this._iconSize.y];
@@ -110,6 +112,8 @@ L.SVG.Tile = L.SVG.extend({
 
         loc = feat._parts[0][0];
         if (style.iconAnchor) {
+            // @TODO: NB! ikooni suurus ei pruugi olla sama kihi piires sama
+            this._iconAnchor = L.point(style.iconAnchor);
             loc.x += style.iconAnchor[0];
             loc.y += style.iconAnchor[1];
         } else if (!style.iconUrl && !style.iconSize) {
@@ -398,16 +402,20 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             throw(e);
         }
     },
-    _mkFeatureOptions: function (feat, styleOpts) {
-        var style = L.extend({}, L.Path.prototype.options, styleOpts);
-        if (feat.geometry.type == 'Polygon') {
-            style.fill = true;
-            style.stroke = true;
-        } else if (feat.geometry.type == 'LineString'){
-            style.fill = false;
-            style.stroke = true;
+    
+    _mkFeatureOptions: function (feat, style) {
+        if (typeof(style) === 'function') {
+            var style = style(feat, this);
         }
-        feat.options = style;
+        var styleDef = L.extend({}, style);
+        if (feat.geometry.type == 'Polygon') {
+            styleDef.fill = true;
+            styleDef.stroke = true;
+        } else if (feat.geometry.type == 'LineString'){
+            styleDef.fill = false;
+            styleDef.stroke = true;
+        }
+        feat.options = styleDef;
         feat.options.pointerEvents = "all";
         feat.options.clickable = true;
         feat.options.interactive = true;
@@ -446,9 +454,13 @@ var _thematicLayers = {
             }
         },
         "typeOptions": {
-//            "onEachFeature": function (feature, layer, tile) {
-//                // tee midagi
-//            }
+            "onEachFeature": function (feature, layer, tile) {
+                return feature;
+            },
+            "style": function(feature, layer) {
+                // WHAA??? :S
+                return layer.options.style.options;
+            }
         }
     }
 };
@@ -471,6 +483,7 @@ function initThematicLayer(thema) {
         minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
         maxZoom = thema.maxZoom !== undefined ? thema.maxZoom : map.getMaxZoom(),
         attribution = thema.attribution !== undefined ? thema.attribution : '',
+        style = Object.assign({}, thema.style),
         constr = _thematicLayers[type]["constructor"],
         opts = Object.assign({}, _thematicLayers[type]["options"]),
         typeOpts = Object.assign({}, _thematicLayers[type]["typeOptions"]);
@@ -483,6 +496,10 @@ function initThematicLayer(thema) {
         opts.attribution = attribution;
     }
     // @TODO: loe ja rakenda teemakihi stiilid konfigust.
+
+    if (style !== undefined) {
+        opts.style = style;
+    }
 
     var _layer = constr(urlTemplate, opts, typeOpts);
     if (isVisible === true) {

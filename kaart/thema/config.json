@@ -19,7 +19,22 @@
             "srid": 3301,
             "isVisible": true,
             "minZoom": 3,
-            "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>"
+            "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>",
+            "style": {
+                "type" : "default",
+                "options": {
+                    "fillColor": "#C6CA53",
+                    "fillOpacity": 1,
+                    "color": "#7B7263",
+                    "opacity": 1,
+                    "weight": 1.5,
+                    "lineCap": "round",
+                    "lineJoin": "round",
+                    "iconUrl":"https://raw.githubusercontent.com/e-gov/kem-gsavalik/master/src/workspaces/keskkonnainfo/styles/icons/png/ristipuud/ristipuu_002.png",
+                    "iconSize": [21, 30],
+                    "iconAnchor": [-10.5, -30]
+                }
+            }
         },
         {
             "layername": "Kohalik kiht",
@@ -28,7 +43,13 @@
             "srid": 3301,
             "isVisible": true,
             "minZoom": 3,
-            "maxZoom": 3
+            "maxZoom": 3,
+            "style": {
+                "type": "default",
+                "options": {
+                    "iconUrl": "../static/img/default-icon.svg"
+                }
+            }
         }
     ]
 }
