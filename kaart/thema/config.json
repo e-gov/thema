@@ -16,27 +16,27 @@
                 "key": "staatus",
                 "values": {
                     "Töötav": {
-                        "iconUrl": "../static/img/o-gray-asparagus.svg",
+                        "iconUrl": "../static/img/o-gray-asparagus.png",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     },
                     "Likvideeritav": {
-                        "iconUrl": "../static/img/o-darkblue-gray.svg",
+                        "iconUrl": "../static/img/o-darkblue-gray.png",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     },
                     "Kasutuskõlbmatu": {
-                        "iconUrl": "../static/img/o-dark-purple.svg",
+                        "iconUrl": "../static/img/o-dark-purple.png",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     },
                     "Konserveeritud": {
-                        "iconUrl": "../static/img/o-redwood.svg",
+                        "iconUrl": "../static/img/o-redwood.png",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     },
                     "Rekonstrueeritav": {
-                        "iconUrl": "../static/img/o-burleywood.svg",
+                        "iconUrl": "../static/img/o-burleywood.png",
                         "iconSize": [10, 10],
                         "iconAnchor": [-5, -5]
                     }
@@ -78,7 +78,7 @@
             "style": {
                 "type": "default",
                 "options": {
-                    "iconUrl": "../static/img/default-icon.svg"
+                    "iconUrl": "../static/img/default-icon.png"
                 }
             }
         }
