@@ -445,6 +445,42 @@ L.tileLayer.geoJson = function(urlTemplate, options, geojsonOptions) {
     return new L.TileLayer.GeoJSON(urlTemplate, options, geojsonOptions);
 }
 
+L.GeoJSON.URL = L.GeoJSON.extend({
+    initialize: function(url, options) {
+        var cls = this;
+
+        // hello! hello! is this thing on?
+        // pole päris kindel, et see nii peaks toimuma, aga ... :D
+        this.get(url).then(function(data){
+            L.GeoJSON.prototype.initialize.call(cls, data, options);
+        }, function(error) {
+            console.error(error);
+        });
+    },
+    get: function(url) {
+        return new Promise(function(resolve, reject) {
+            fetch(url)
+                .then(function(response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    reject(Error(
+                        L.Util.template(
+                            'GET {url} returned HTTP {status} ({statusText})',
+                            response
+                        )
+                    ));
+                }).then(function(data) {
+                    resolve(data);
+                });
+        });
+    }
+});
+
+L.geoJSON.url = function(url, options) {
+    return new L.GeoJSON.URL(url, options);
+}
+
 var _thematicLayers = {
     "geojson.tile": {
         "constructor": L.tileLayer.geoJson,
@@ -469,6 +505,9 @@ var _thematicLayers = {
                 return {};
             }
         }
+    },
+    "geojson.url": {
+        "constructor": L.geoJSON.url
     }
 };
 

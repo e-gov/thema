@@ -3,7 +3,7 @@
     "basemaps": ["ortho","kaart"],
     "thema": [
         {
-            "layername": "Näidisteemakiht 1",
+            "layername": "GeoJSON kahhel, klassifitseeritud",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/eelis:kr_puurkaev@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
@@ -44,7 +44,7 @@
             }
         },
         {
-            "layername": "Näidisteemakiht 2",
+            "layername": "GeoJSON kahhel, ühtne kujundus.",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:ristipuud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
@@ -68,11 +68,11 @@
             }
         },
         {
-            "layername": "Kohalik kiht",
+            "layername": "Kohalik kahheldatud GeoJSON kiht",
             "url": "./data/example/kohalik/{z}/{x}/{-y}.json",
             "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": true,
+            "isVisible": false,
             "minZoom": 3,
             "maxZoom": 3,
             "style": {
@@ -81,6 +81,14 @@
                     "iconUrl": "../static/img/default-icon.png"
                 }
             }
+        },
+        {
+            "layername": "GeoJSON kiht URLilt",
+            "url": "https://rawgit.com/buildig/EHAK/master/geojson/omavalitsus.json",
+            "type": "geojson.url",
+            "srid": 4326,
+            "isVisible": true,
+            "minZoom": 3
         }
     ]
 }
