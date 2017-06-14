@@ -8,6 +8,7 @@
             "type": "geojson.tile",
             "srid": 3301,
             "isVisible": false,
+            "hover":false,
             "minZoom": 5,
             "maxZoom": 10,
             "attribution": "Puurkaevud: CC BY 4.0 EELIS (Eesti Looduse Infosüsteem - Keskkonnaregister) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
@@ -49,6 +50,7 @@
             "type": "geojson.tile",
             "srid": 3301,
             "isVisible": true,
+            "hover":true,
             "minZoom": 3,
             "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>",
             "style": {
@@ -73,6 +75,7 @@
             "type": "geojson.tile",
             "srid": 3301,
             "isVisible": false,
+            "hover":false,
             "minZoom": 3,
             "maxZoom": 3,
             "style": {
@@ -88,7 +91,150 @@
             "type": "geojson.url",
             "srid": 4326,
             "isVisible": true,
-            "minZoom": 3
+            "minZoom": 3,
+            "hover":true,
+            "attribution":"Omavalitsusüksused via <a href=\"https://github.com/buildig/EHAK/tree/master\">buildig/EHAK@master</a>",
+            "style": {
+                "type": "classify",
+                "key": "MKOOD",
+                "values": {
+                    "0074": {
+                        "fillColor": "#A0CCDA",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0039": {
+                        "fillColor": "#BA8F95",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0067": {
+                        "fillColor": "#008DD5",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0057": {
+                        "fillColor": "#773344",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0070": {
+                        "fillColor": "#E3B5A4",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0037": {
+                        "fillColor": "#E43F6F",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0084": {
+                        "fillColor": "#0B0014",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0051": {
+                        "fillColor": "#FFAA5A",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0059": {
+                        "fillColor": "#FFD25A",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0044": {
+                        "fillColor": "#FF785A",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0049": {
+                        "fillColor": "#FFF05A",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0078": {
+                        "fillColor": "#6B2737",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0082": {
+                        "fillColor": "#BDF7B7",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0065": {
+                        "fillColor": "#3943B7",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    },
+                    "0086": {
+                        "fillColor": "#254E70",
+                        "fillOpacity": 0.7,
+                        "color": "#0C1308",
+                        "opacity": 1,
+                        "weight": 1.5,
+                        "lineCap": "round",
+                        "lineJoin": "round"
+                    }
+                }
+            }
         }
     ]
 }

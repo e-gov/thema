@@ -215,8 +215,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
 
 L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     options : {
-        rendererFactory: L.svg.tile,
-        hoverClassNamePrefix: 'hover'
+        rendererFactory: L.svg.tile
     },
 
     createTile: function (coords, done) {
@@ -302,7 +301,9 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             feat._path.setAttribute('id', this.options.unique(feat));
             this._cachePath(feat, this.options.unique);
             var _paths = this._paths,
-                _hoverClassName = this.options.hoverClassNamePrefix + "-" + feat.geometry.type,
+                geomType = feat.geometry.type.replace('Multi', ''),
+                hoverClassNamePrefix = this.options.hoverClassNamePrefix,
+                _hoverClassName = hoverClassNamePrefix !== undefined ? hoverClassNamePrefix + "-" + feat.geometry.type : undefined,
                 layer = this,
                 path = feat._path,
                 geojsonOptions = this.geojsonOptions;
@@ -311,23 +312,27 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 this.geojsonOptions.onEachFeature(feat, path, renderer);
             }
             path.addEventListener('mouseover', function(e) {
-                var target = e.target,
-                    id = target.id,
-                    paths = _paths[id];
-                for (var i in paths) {
-                    var cpath = paths[i];
-                    if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
-                        L.DomUtil.addClass(cpath._path, _hoverClassName);
+                if (_hoverClassName !== undefined) {
+                    var target = e.target,
+                        id = target.id,
+                        paths = _paths[id];
+                    for (var i in paths) {
+                        var cpath = paths[i];
+                        if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
+                            L.DomUtil.addClass(cpath._path, _hoverClassName);
+                        }
                     }
                 }
             }, false);
             path.addEventListener('mouseout', function(e) {
-                var id = e.target.id,
-                    paths = _paths[id];
-                for (var i in paths) {
-                    var cpath = paths[i];
-                    if (L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
-                        L.DomUtil.removeClass(cpath._path, _hoverClassName);
+                if (_hoverClassName !== undefined) {
+                    var id = e.target.id,
+                        paths = _paths[id];
+                    for (var i in paths) {
+                        var cpath = paths[i];
+                        if (L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
+                            L.DomUtil.removeClass(cpath._path, _hoverClassName);
+                        }
                     }
                 }
             }, false);
@@ -448,7 +453,6 @@ L.tileLayer.geoJson = function(urlTemplate, options, geojsonOptions) {
 L.GeoJSON.URL = L.GeoJSON.extend({
     initialize: function(url, options) {
         var cls = this;
-
         // hello! hello! is this thing on?
         // pole päris kindel, et see nii peaks toimuma, aga ... :D
         this.get(url).then(function(data){
@@ -474,6 +478,17 @@ L.GeoJSON.URL = L.GeoJSON.extend({
                     resolve(data);
                 });
         });
+    },
+    _setLayerStyle: function(layer, style) {
+        if (typeof style === 'function') {
+            style = style(layer.feature, layer.options.styleDescriptor);
+        }
+        if (layer.setStyle) {
+            layer.setStyle(style);
+        }
+    },
+    getAttribution: function() {
+        return this.options.attribution;
     }
 });
 
@@ -490,24 +505,58 @@ var _thematicLayers = {
             }
         },
         "typeOptions": {
-            "onEachFeature": function (feature, layer, tile) {
+            "onEachFeature": function (feature, layers, tile) {
                 return feature;
             },
             "style": function(feature, layer) {
-                var style = layer.options.style;
+                var style = layer.options.styleDescriptor;
                 if (style.type == "default") {
-                    return layer.options.style.values;
+                    return style.values;
                 } else if (style.type == "classify") {
-                    var key = layer.options.style.key,
+                    var key = style.key,
                         val = feature.properties[key];
-                    return layer.options.style.values[val] || {};
+                    return style.values[val] || {};
                 }
                 return {};
             }
         }
     },
     "geojson.url": {
-        "constructor": L.geoJSON.url
+        "constructor": L.geoJSON.url,
+        "options": {
+            "style": function(feature, style) {
+                if (style.type == "default") {
+                    return style.values;
+                } else if (style.type == "classify") {
+                    var key = style.key,
+                        val = feature.properties[key];
+                    return style.values[val] || {};
+                }
+                return {};
+            },
+            "onEachFeature": function(feature, layer) {
+                // @TODO: L.TileLayer.GeoJSON toimub see `hover` klassinime
+                // lisamine mujal. liiguta siit ka see välja!
+                if (layer.options.hoverClassNamePrefix) {
+                    var geomType = feature.geometry.type.replace('Multi', ''),
+                        _hoverClassName = layer.options.hoverClassNamePrefix + "-" + geomType;
+                    layer.on('mouseover', function(e) {
+                        var _layer = e.target,
+                            _path = _layer._path;
+                        if (!L.DomUtil.hasClass(_path, _hoverClassName)) {
+                            L.DomUtil.addClass(_path, _hoverClassName);
+                        }
+                    });
+                    layer.on('mouseout', function(e) {
+                        var _layer = e.target,
+                            _path = _layer._path;
+                        if (L.DomUtil.hasClass(_path, _hoverClassName)) {
+                            L.DomUtil.removeClass(_path, _hoverClassName);
+                        }
+                    });
+                }
+            }
+        }
     }
 };
 
@@ -529,6 +578,7 @@ function initThematicLayer(thema) {
         minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
         maxZoom = thema.maxZoom !== undefined ? thema.maxZoom : map.getMaxZoom(),
         attribution = thema.attribution !== undefined ? thema.attribution : '',
+        hoverClassNamePrefix = thema.hover == true ? 'hover' : undefined,
         style = Object.assign({}, thema.style),
         constr = _thematicLayers[type]["constructor"],
         opts = Object.assign({}, _thematicLayers[type]["options"]),
@@ -541,10 +591,13 @@ function initThematicLayer(thema) {
     if (attribution !== '') {
         opts.attribution = attribution;
     }
-    // @TODO: loe ja rakenda teemakihi stiilid konfigust.
-
+    if (hoverClassNamePrefix !== undefined) {
+        // see võiks olla tegelikult kasutaja juhitav, saab cssis määrata
+        // midagi muud kujunduseks kui meie default.
+        opts.hoverClassNamePrefix = hoverClassNamePrefix;
+    }
     if (style !== undefined) {
-        opts.style = style;
+        opts.styleDescriptor = style;
     }
 
     var _layer = constr(urlTemplate, opts, typeOpts);
