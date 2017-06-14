@@ -95,7 +95,7 @@ L.SVG.Tile = L.SVG.extend({
         if (style.iconUrl) {
             iconUrl = style.iconUrl;
         } else {
-            iconUrl = '../static/img/default-icon.svg';
+            iconUrl = '../static/img/default-icon.png';
         }
         icon.setAttributeNS('http://www.w3.org/1999/xlink', 'href', iconUrl);
 
