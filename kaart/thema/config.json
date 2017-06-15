@@ -80,7 +80,7 @@
             "maxZoom": 3,
             "style": {
                 "type": "default",
-                "options": {
+                "values": {
                     "iconUrl": "../static/img/default-icon.png"
                 }
             }
