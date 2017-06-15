@@ -279,43 +279,43 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
 
     _renderFeature(renderer, feature, coords, unitsPerTile) {
         var style = this.geojsonOptions.style || L.Path.prototype.options,
-            feat = feature,
-            geomType = feat.geometry.type,
+            geomType = feature.geometry.type,
             isClosed = ['Polygon', 'MultiPolygon'].indexOf(geomType) >= 0 ? true : false,
             isMulti = geomType.indexOf('Multi') == 0 ? true : false,
             clipPathId = renderer._clipPathId;
         if (isMulti == false) {
-            this._mkFeatureParts(feat, unitsPerTile, coords);
-            this._mkFeatureOptions(feat, style);
+            var _layer = {};
+            _layer.feature = feature;
+            this._mkFeatureParts(_layer, unitsPerTile, coords)
+            this._mkFeatureOptions(_layer, style);
+
             if (geomType != 'Point') {
-                renderer._initPath(feat);
-                renderer._updateStyle(feat);
-                renderer._updatePoly(feat, isClosed);
-                renderer._addPath(feat);
+                renderer._initPath(_layer);
+                renderer._updateStyle(_layer);
+                renderer._updatePoly(_layer, isClosed);
+                renderer._addPath(_layer);
             } else {
-                renderer._initIcon(feat);
-                renderer._updateIconStyle(feat);
-                renderer._addIcon(feat);
+                renderer._initIcon(_layer);
+                renderer._updateIconStyle(_layer);
+                renderer._addIcon(_layer);
             }
-            feat._path.setAttribute('pointer-events', 'all');
-            feat._path.setAttribute('id', this.options.unique(feat));
-            this._cachePath(feat, this.options.unique);
-            var _paths = this._paths,
-                geomType = feat.geometry.type.replace('Multi', ''),
+            _layer._path.setAttribute('pointer-events', 'all');
+            _layer._path.setAttribute('id', this.options.unique(feature));
+            this._cacheLayer(_layer, this.options.unique);
+            var _layers = this._layers,
                 hoverClassNamePrefix = this.options.hoverClassNamePrefix,
-                _hoverClassName = hoverClassNamePrefix !== undefined ? hoverClassNamePrefix + "-" + feat.geometry.type : undefined,
-                layer = this,
-                path = feat._path,
+                _hoverClassName = hoverClassNamePrefix !== undefined ? hoverClassNamePrefix + "-" + geomType : undefined,
+                layer = _layer._path,
                 geojsonOptions = this.geojsonOptions;
-            this.addInteractiveTarget(path);
+            this.addInteractiveTarget(layer);
             if (geojsonOptions && geojsonOptions.onEachFeature) {
-                this.geojsonOptions.onEachFeature(feat, path, renderer);
+                this.geojsonOptions.onEachFeature(feature, layer, renderer);
             }
-            path.addEventListener('mouseover', function(e) {
+            layer.addEventListener('mouseover', function(e) {
                 if (_hoverClassName !== undefined) {
                     var target = e.target,
                         id = target.id,
-                        paths = _paths[id];
+                        paths = _layers[id];
                     for (var i in paths) {
                         var cpath = paths[i];
                         if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
@@ -324,10 +324,10 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                     }
                 }
             }, false);
-            path.addEventListener('mouseout', function(e) {
+            layer.addEventListener('mouseout', function(e) {
                 if (_hoverClassName !== undefined) {
                     var id = e.target.id,
-                        paths = _paths[id];
+                        paths = _layers[id];
                     for (var i in paths) {
                         var cpath = paths[i];
                         if (L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
@@ -339,32 +339,33 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         } else {
             // If it's a multitype, render as separate features
             for (var i = 0; i < feat.geometry.coordinates.length; i++) {
-                var featPart = Object.create(feat),
-                    geomType = feat.geometry.type.replace('Multi', '');
+                var featPart = Object.create(feature),
+                    geomType = feature.geometry.type.replace('Multi', '');
                 featPart.geometry = {"type": geomType, coordinates:[]};
-                featPart.properties = feat.properties;
+                featPart.properties = feature.properties;
                 featPart.type = "Feature";
-                featPart.id = feat.id;
-                var coordinates = feat.geometry.coordinates[i];
+                featPart.id = feature.id;
+                var coordinates = feature.geometry.coordinates[i];
                 featPart.geometry.coordinates = coordinates;
                 this._renderFeature(renderer, featPart, coords, unitsPerTile);
             }
         }
     },
 
-    _cachePath(feat, fn) {
-        var id = fn(feat);
-        if (id in this._paths) {
-            this._paths[id].push(feat);
+    _cacheLayer(layer, fn) {
+        var id = fn(layer.feature);
+        if (id in this._layers) {
+            this._layers[id].push(layer);
         } else {
-            this._paths[id] = [feat];
+            this._layers[id] = [layer];
         }
     },
 
-    _mkFeatureParts: function(feat, unitsPerTile, coords) {
-        var rings = feat.geometry.coordinates,
-            geomType = feat.geometry.type;
-        feat._parts = [];
+    _mkFeatureParts: function(layer, unitsPerTile, coords) {
+        var feature = layer.feature,
+            rings = feature.geometry.coordinates,
+            geomType = feature.geometry.type,
+            parts = layer._parts = [];
         if (geomType == 'Polygon') {
              for (var i in rings) {
                 var ring = rings[i],
@@ -373,7 +374,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                     this._getCoords(ring[j], part, coords, unitsPerTile);
                 }
                 if (part.length > 0) {
-                    feat._parts.push(part);
+                    parts.push(part);
                 }
             }
         } else if (geomType == 'LineString') {
@@ -382,14 +383,14 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 var ring = rings[i];
                 this._getCoords(ring, part, coords, unitsPerTile);
                 if (part.length > 0) {
-                    feat._parts.push(part);
+                    parts.push(part);
                 }
             }
         } else if (geomType == 'Point') {
             var part = [];
             this._getCoords(rings, part, coords, unitsPerTile);
             if (part.length > 0) {
-                feat._parts.push(part);
+                parts.push(part);
             }
         }
     },
@@ -408,33 +409,40 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
     },
 
-    _mkFeatureOptions: function (feat, style) {
+    _mkFeatureOptions: function (layer, style) {
+        var feature = layer.feature,
+            geomType = feature.geometry.type;
         if (typeof(style) === 'function') {
-            var style = style(feat, this);
+            var style = style(feature, this);
         }
         var styleDef = L.extend({}, style);
-        if (feat.geometry.type == 'Polygon') {
+        if (geomType == 'Polygon') {
             styleDef.fill = true;
             styleDef.stroke = true;
-        } else if (feat.geometry.type == 'LineString'){
+        } else if (geomType == 'LineString'){
             styleDef.fill = false;
             styleDef.stroke = true;
         }
-        feat.options = styleDef;
-        feat.options.pointerEvents = "all";
-        feat.options.clickable = true;
-        feat.options.interactive = true;
+        styleDef.pointerEvents = "all";
+        styleDef.clickable = true;
+        styleDef.interactive = true;
+        layer.options = styleDef;
     },
 
     initialize: function (url, options, geojsonOptions) {
         L.TileLayer.Ajax.prototype.initialize.call(this, url, options);
         this.geojsonOptions = geojsonOptions || {};
         this.datum = null;
-        this._paths = {};
+        this._layers = {};
     },
     onAdd: function (map) {
         this._map = map;
         L.TileLayer.Ajax.prototype.onAdd.call(this, map);
+        _layers = this._layers;
+        map.on('zoomstart', function(e) {
+            // tühjendame viimasel zoomil kogutud cache'i
+            for (var layer in _layers) delete _layers[layer];
+        });
     },
     onRemove: function (map) {
         L.TileLayer.Ajax.prototype.onRemove.call(this, map);
