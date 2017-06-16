@@ -220,7 +220,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
 
     createTile: function (coords, done) {
         var renderer = this.options.rendererFactory(this.getTileSize(), this.options, coords);
-            renderer._initClipPath(coords.x, coords.y, coords.z);
+        renderer._initClipPath(coords.x, coords.y, coords.z);
         var tile = document.createElement('svg', 'leaflet-tile'),
             size = this.getTileSize();
         tile.width = size.x;
@@ -229,7 +229,6 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         tile.renderer = renderer;
         tile.tilePoint = coords;
         tile.crs = this._map.options.crs;
-        //this._tiles[coords.x + ':' + coords.y + ':' + coords.z] = tile;
         tile.layer = this;
 
         L.DomEvent.on(renderer, 'load', L.Util.bind(this._tileOnLoad, this, this.renderTile, tile));
@@ -243,7 +242,6 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     renderTile : function (tile) {
         var renderer = tile.renderer,
             coords = tile.tilePoint,
-            //unitsPerTile = this._map.options.crs.options.resolutions[coords.z] * this.getTileSize().x,
             unitsPerTile = tile.crs.options.resolutions[coords.z] * tile.width,
             geojson = tile.datum;
         for (var i in geojson.features) {
@@ -283,16 +281,18 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     },
 
     _renderFeature(renderer, feature, coords, unitsPerTile) {
-        var style = this.geojsonOptions.style || L.Path.prototype.options,
+        var options = this.options,
             geomType = feature.geometry.type,
             isClosed = ['Polygon', 'MultiPolygon'].indexOf(geomType) >= 0 ? true : false,
             isMulti = geomType.indexOf('Multi') == 0 ? true : false,
             clipPathId = renderer._clipPathId;
         if (isMulti == false) {
-            var _layer = {};
+            var F = L.Class.extend({}),
+            _layer = new F();
             _layer.feature = feature;
+            var id = this._cacheLayer(_layer, this.options.unique);
             this._mkFeatureParts(_layer, unitsPerTile, coords)
-            this._mkFeatureOptions(_layer, style);
+            this._mkFeatureOptions(_layer, options);
 
             if (geomType != 'Point') {
                 renderer._initPath(_layer);
@@ -304,43 +304,17 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 renderer._updateIconStyle(_layer);
                 renderer._addIcon(_layer);
             }
+
             _layer._path.setAttribute('pointer-events', 'all');
-            _layer._path.setAttribute('id', this.options.unique(feature));
-            this._cacheLayer(_layer, this.options.unique);
-            var _layers = this._layers,
-                hoverClassNamePrefix = this.options.hoverClassNamePrefix,
-                _hoverClassName = hoverClassNamePrefix !== undefined ? hoverClassNamePrefix + "-" + geomType : undefined,
-                layer = _layer._path,
-                geojsonOptions = this.geojsonOptions;
-            this.addInteractiveTarget(layer);
-            if (geojsonOptions && geojsonOptions.onEachFeature) {
-                this.geojsonOptions.onEachFeature(feature, layer, renderer);
+            _layer._path.setAttribute('id', id);
+
+            this.addInteractiveTarget(_layer);
+
+            if (options && options.onEachFeature) {
+                this.options.onEachFeature(feature, _layer._path, renderer);
             }
-            layer.addEventListener('mouseover', function(e) {
-                if (_hoverClassName !== undefined) {
-                    var target = e.target,
-                        id = target.id,
-                        paths = _layers[id];
-                    for (var i in paths) {
-                        var cpath = paths[i];
-                        if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
-                            L.DomUtil.addClass(cpath._path, _hoverClassName);
-                        }
-                    }
-                }
-            }, false);
-            layer.addEventListener('mouseout', function(e) {
-                if (_hoverClassName !== undefined) {
-                    var id = e.target.id,
-                        paths = _layers[id];
-                    for (var i in paths) {
-                        var cpath = paths[i];
-                        if (L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
-                            L.DomUtil.removeClass(cpath._path, _hoverClassName);
-                        }
-                    }
-                }
-            }, false);
+
+            this.attachInteraction(_layer);
         } else {
             // If it's a multitype, render as separate features
             for (var i = 0; i < feat.geometry.coordinates.length; i++) {
@@ -357,6 +331,54 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
     },
 
+    attachInteraction(layer) {
+        var options = this.options,
+            hoverClassNamePrefix = options.hoverClassNamePrefix,
+            feature = layer.feature,
+            geomType = feature.geometry.type,
+            _hoverClassName = hoverClassNamePrefix !== undefined ? hoverClassNamePrefix + "-" + geomType : undefined;
+
+        L.DomEvent.on(
+            layer._path, 'mouseover', L.Util.bind(
+                function(layer) {
+                    var feature = layer.feature;
+                    if (layer.options.info) {
+                        layer.options.info.update(
+                            feature.properties,
+                            layer.options.layername,
+                            layer.options.infoTemplate
+                        );
+                    }
+                    if (_hoverClassName) {
+                         var id = layer.options.unique(feature),
+                            paths = _layers[id];
+                         for (var i in paths) {
+                             var cpath = paths[i];
+                             if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
+                                 L.DomUtil.addClass(cpath._path, _hoverClassName);
+                             }
+                         }
+                    }
+                }, this, layer));
+
+        L.DomEvent.on(
+            layer._path, 'mouseout', L.Util.bind(
+                function(layer) {
+                    var feature = layer.feature,
+                        id = layer.options.unique(feature),
+                        paths = _layers[id];
+                    if (layer.options && layer.options.info) {
+                        layer.options.info.update();
+                    }
+                    for (var i in paths) {
+                        var cpath = paths[i];
+                        if (L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
+                            L.DomUtil.removeClass(cpath._path, _hoverClassName);
+                        }
+                    }
+                }, this, layer));
+    },
+
     _cacheLayer(layer, fn) {
         var id = fn(layer.feature);
         if (id in this._layers) {
@@ -364,6 +386,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         } else {
             this._layers[id] = [layer];
         }
+        return id;
     },
 
     _mkFeatureParts: function(layer, unitsPerTile, coords) {
@@ -414,13 +437,15 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
     },
 
-    _mkFeatureOptions: function (layer, style) {
+    _mkFeatureOptions: function (layer, options) {
         var feature = layer.feature,
-            geomType = feature.geometry.type;
+            geomType = feature.geometry.type,
+            opts = L.extend({}, options),
+            style = opts.style || L.Path.prototype.options;
         if (typeof(style) === 'function') {
             var style = style(feature, this);
         }
-        var styleDef = L.extend({}, style);
+        var styleDef = L.extend(opts, style);
         if (geomType == 'Polygon') {
             styleDef.fill = true;
             styleDef.stroke = true;
@@ -434,9 +459,8 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         layer.options = styleDef;
     },
 
-    initialize: function (url, options, geojsonOptions) {
+    initialize: function (url, options) {
         L.TileLayer.Ajax.prototype.initialize.call(this, url, options);
-        this.geojsonOptions = geojsonOptions || {};
         this.datum = null;
         this._layers = {};
     },
@@ -463,8 +487,8 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     }
 });
 
-L.tileLayer.geoJson = function(urlTemplate, options, geojsonOptions) {
-    return new L.TileLayer.GeoJSON(urlTemplate, options, geojsonOptions);
+L.tileLayer.geoJson = function(urlTemplate, options) {
+    return new L.TileLayer.GeoJSON(urlTemplate, options);
 }
 
 L.GeoJSON.URL = L.GeoJSON.extend({
@@ -519,10 +543,8 @@ var _thematicLayers = {
         "options": {
             "unique": function (feature) {
                 return feature.id;
-            }
-        },
-        "typeOptions": {
-            "onEachFeature": function (feature, layers, tile) {
+            },
+            "onEachFeature": function (feature, layer, tile) {
                 return feature;
             },
             "style": function(feature, layer) {
@@ -532,7 +554,7 @@ var _thematicLayers = {
                 } else if (style.type == "classify") {
                     var key = style.key,
                         val = feature.properties[key];
-                    return style.values[val] || {};
+                        return style.values[val] || {};
                 }
                 return {};
             }
@@ -563,6 +585,14 @@ var _thematicLayers = {
                         if (!L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.addClass(_path, _hoverClassName);
                         }
+                        if (_layer.options.info !== undefined) {
+                            var info = _layer.options.info;
+                            info.update(
+                                _layer.feature.properties,
+                                _layer.options.layername,
+                                _layer.options.infoTemplate
+                            );
+                        }
                     });
                     layer.on('mouseout', function(e) {
                         var _layer = e.target,
@@ -570,6 +600,7 @@ var _thematicLayers = {
                         if (L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.removeClass(_path, _hoverClassName);
                         }
+                        info.update();
                     });
                 }
             }
@@ -599,12 +630,17 @@ function initThematicLayer(thema) {
         style = Object.assign({}, thema.style),
         constr = _thematicLayers[type]["constructor"],
         opts = Object.assign({}, _thematicLayers[type]["options"]),
-        typeOpts = Object.assign({}, _thematicLayers[type]["typeOptions"]);
+        infoTemplate = thema.info;
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
     opts.minZoom = minZoom;
     opts.maxZoom = maxZoom;
+    opts.layername = layername;
+    if (infoTemplate !== undefined) {
+        opts.info = info;
+        opts.infoTemplate = infoTemplate;
+    }
     if (attribution !== '') {
         opts.attribution = attribution;
     }
@@ -617,7 +653,7 @@ function initThematicLayer(thema) {
         opts.styleDescriptor = style;
     }
 
-    var _layer = constr(urlTemplate, opts, typeOpts);
+    var _layer = constr(urlTemplate, opts);
     if (isVisible === true) {
         _layer.addTo(map);
     }

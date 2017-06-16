@@ -9,6 +9,7 @@
             "srid": 3301,
             "isVisible": false,
             "hover":false,
+            "info":"KKR kood: <b>{kr_kood}</b></br>Staatus: <b>{staatus}</b>",
             "minZoom": 5,
             "maxZoom": 10,
             "attribution": "Puurkaevud: CC BY 4.0 EELIS (Eesti Looduse Infosüsteem - Keskkonnaregister) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
@@ -51,6 +52,7 @@
             "srid": 3301,
             "isVisible": true,
             "hover":true,
+            "info":"<b>{nimi}</b></br>{kirjeldus}",
             "minZoom": 3,
             "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>",
             "style": {
@@ -93,6 +95,7 @@
             "isVisible": true,
             "minZoom": 3,
             "hover":true,
+            "info":"<b>{ONIMI}</b>, {MNIMI} : ({OKOOD})</br><small>tegelikult olen täiesti konfigureeritav</small>",
             "attribution":"Omavalitsusüksused via <a href=\"https://github.com/buildig/EHAK/tree/master\">buildig/EHAK@master</a>",
             "style": {
                 "type": "classify",
