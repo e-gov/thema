@@ -172,7 +172,7 @@ L.svg.tile = function(tileSize, opts){
 L.TileLayer.Ajax = L.TileLayer.extend({
     _requests: [],
 
-    _xhrHandler: function (req, layer, tile, tilePoint) {
+    _xhrHandler: function (req, tile) {
         return function () {
             if (req.readyState !== 4) {
                 return;
@@ -180,20 +180,20 @@ L.TileLayer.Ajax = L.TileLayer.extend({
             var s = req.status;
             if ((s >= 200 && s < 300) || s === 304) {
                 tile.datum = JSON.parse(req.responseText);
-                layer._tileLoaded(tile, tilePoint);
+                tile.renderer.fire('load');
             } else {
-                layer._tileLoaded(tile, tilePoint);
+                tile.datum = false;
+                tile.renderer.fire('error');
             }
         };
     },
 
     // Load the requested tile via AJAX
-    _loadTile: function (tile, tilePoint) {
-        var layer = this;
+    _loadTile: function (tile) {
         var req = new XMLHttpRequest();
         this._requests.push(req);
-        req.onreadystatechange = this._xhrHandler(req, layer, tile, tilePoint);
-        req.open('GET', this.getTileUrl(tilePoint), true);
+        req.onreadystatechange = this._xhrHandler(req, tile);
+        req.open('GET', this.getTileUrl(tile.tilePoint), true);
         req.send();
     },
 
@@ -223,30 +223,34 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             renderer._initClipPath(coords.x, coords.y, coords.z);
         var tile = document.createElement('svg', 'leaflet-tile'),
             size = this.getTileSize();
-            tile.width = size.x;
-            tile.height = size.y;
-            tile.processed = false;
-            tile.datum = false;
-            tile.renderer = renderer;
-        this._tiles[coords.x + ':' + coords.y + ':' + coords.z] = tile;
-        this._loadTile(tile, coords);
+        tile.width = size.x;
+        tile.height = size.y;
+        tile.datum = false;
+        tile.renderer = renderer;
+        tile.tilePoint = coords;
+        tile.crs = this._map.options.crs;
+        //this._tiles[coords.x + ':' + coords.y + ':' + coords.z] = tile;
+        tile.layer = this;
 
-        L.DomEvent.on(tile, 'load', L.bind(this._tileOnLoad, this, done, tile));
-        L.DomEvent.on(tile, 'error', L.bind(this._tileOnError, this, done, tile));
+        L.DomEvent.on(renderer, 'load', L.Util.bind(this._tileOnLoad, this, this.renderTile, tile));
+        L.DomEvent.on(renderer, 'error', L.Util.bind(this._tileOnError, this, done, tile));
 
         L.Util.requestAnimFrame(done.bind(coords, null, null));
+        this._loadTile(tile);
         return renderer.getContainer();
     },
 
-    renderTile : function (tile, coords, done) {
+    renderTile : function (tile) {
         var renderer = tile.renderer,
-            unitsPerTile = this._map.options.crs.options.resolutions[coords.z] * this.getTileSize().x
+            coords = tile.tilePoint,
+            //unitsPerTile = this._map.options.crs.options.resolutions[coords.z] * this.getTileSize().x,
+            unitsPerTile = tile.crs.options.resolutions[coords.z] * tile.width,
             geojson = tile.datum;
         for (var i in geojson.features) {
             var feat = geojson.features[i],
                 geomType = feat.geometry.type;
             if (geomType != 'GeometryCollection') {
-                this._renderFeature(renderer, feat, coords, unitsPerTile);
+                tile.layer._renderFeature(renderer, feat, coords, unitsPerTile);
             } else {
                 var geometries = feat.geometry.geometries;
                 for (var i in geometries) {
@@ -256,7 +260,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                     featPart.id = feat.id,
                     geometry = geometries[i],
                     featPart.geometry = geometry;
-                    this._renderFeature(renderer, featPart, coords, unitsPerTile);
+                    tile.layer._renderFeature(renderer, featPart, coords, unitsPerTile);
                 }
             }
         }
@@ -275,6 +279,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 [0 + anchor.x, 0 + anchor.y, renderer._size.x - resizeHeight, renderer._size.y - resizeWidth].join(' '));
             L.DomUtil.setTransform(renderer._container, tilePosition);
         }
+        return tile;
     },
 
     _renderFeature(renderer, feature, coords, unitsPerTile) {
@@ -448,9 +453,13 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         L.TileLayer.Ajax.prototype.onRemove.call(this, map);
     },
 
-    _tileLoaded: function (tile, tilePoint, done) {
+    _tileOnLoad: function (done, tile) {
         if (tile.datum === null) { return null; }
-        this.renderTile(tile, tilePoint, done);
+        done(tile);
+    },
+
+    _tileOnError: function(done, tile, error) {
+        done(error, tile);
     }
 });
 
