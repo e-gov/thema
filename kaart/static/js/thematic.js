@@ -72,6 +72,7 @@ L.SVG.Tile = L.SVG.extend({
     },
 
     _addPath: function(layer) {
+        layer._path.setAttribute('clip-path', 'url(#' + this._clipPathId + ')')
         this._rootGroup.appendChild(layer._path);
     },
 
