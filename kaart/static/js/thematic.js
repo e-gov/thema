@@ -318,7 +318,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             this.attachInteraction(_layer);
         } else {
             // If it's a multitype, render as separate features
-            for (var i = 0; i < feat.geometry.coordinates.length; i++) {
+            for (var i = 0; i < feature.geometry.coordinates.length; i++) {
                 var featPart = Object.create(feature),
                     geomType = feature.geometry.type.replace('Multi', '');
                 featPart.geometry = {"type": geomType, coordinates:[]};
