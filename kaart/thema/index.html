@@ -10,6 +10,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.1/proj4leaflet.min.js" type="text/javascript"></script>
     <script src="../static/js/baselayers.js" type="text/javascript"></script>
     <script src="../static/js/thematic.js" type="text/javascript"></script>
+    <script src="../static/js/info.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="map">
@@ -42,33 +43,6 @@
         var overlays = {};
         var layerControl = L.control.layers(baselayers, overlays);
         layerControl.addTo(map);
-
-        var info = L.control({position:'bottomright'});
-
-        info.onAdd = function (map) {
-            this._div = L.DomUtil.create('div', 'info');
-            this.update();
-            return this._div;
-        };
-
-        info.update = function(properties, layername, template) {
-            if (template === undefined) {
-                this._div.innerHTML = '';
-                return;
-            }
-            console.log(properties);
-            var title = layername || '',
-                heading = L.Util.template(
-                    '<h4>{title}</h4>', {"title":title}),
-                body = L.Util.template(
-                    template, properties);
-            this._div.innerHTML = L.Util.template(
-                '{heading}</br>{body}',
-                {heading:heading, body:body}
-            );
-        }
-
-        info.addTo(map);
 
         fetch("config.json")
           .then(function(response) {

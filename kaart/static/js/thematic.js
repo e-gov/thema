@@ -342,12 +342,12 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         L.DomEvent.on(
             layer._path, 'mouseover', L.Util.bind(
                 function(layer) {
-                    var feature = layer.feature;
-                    if (layer.options.info) {
-                        layer.options.info.update(
+                    var feature = layer.feature,
+                        _info = layer.options.info;
+                    if (_info !== undefined) {
+                        _info.update(
                             feature.properties,
-                            layer.options.layername,
-                            layer.options.infoTemplate
+                            layer.options.layername
                         );
                     }
                     if (_hoverClassName) {
@@ -367,9 +367,10 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 function(layer) {
                     var feature = layer.feature,
                         id = layer.options.unique(feature),
-                        paths = _layers[id];
-                    if (layer.options && layer.options.info) {
-                        layer.options.info.update();
+                        paths = _layers[id],
+                        _info = layer.options.info;
+                    if (_info !== undefined) {
+                        _info.update();
                     }
                     for (var i in paths) {
                         var cpath = paths[i];
@@ -582,26 +583,28 @@ var _thematicLayers = {
                         _hoverClassName = layer.options.hoverClassNamePrefix + "-" + geomType;
                     layer.on('mouseover', function(e) {
                         var _layer = e.target,
-                            _path = _layer._path;
+                            _path = _layer._path,
+                            _info = _layer.options.info;
                         if (!L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.addClass(_path, _hoverClassName);
                         }
-                        if (_layer.options.info !== undefined) {
-                            var info = _layer.options.info;
-                            info.update(
+                        if (_info !== undefined) {
+                            _info.update(
                                 _layer.feature.properties,
-                                _layer.options.layername,
-                                _layer.options.infoTemplate
+                                _layer.options.layername
                             );
                         }
                     });
                     layer.on('mouseout', function(e) {
                         var _layer = e.target,
-                            _path = _layer._path;
+                            _path = _layer._path,
+                            _info = _layer.options.info;
                         if (L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.removeClass(_path, _hoverClassName);
                         }
-                        info.update();
+                        if (_info !== undefined) {
+                            _info.update();
+                        }
                     });
                 }
             }
@@ -639,8 +642,10 @@ function initThematicLayer(thema) {
     opts.maxZoom = maxZoom;
     opts.layername = layername;
     if (infoTemplate !== undefined) {
-        opts.info = info;
-        opts.infoTemplate = infoTemplate;
+        var infoopts = {
+            template:infoTemplate
+        }
+        opts.info = L.control.info(infoopts).addTo(map);
     }
     if (attribution !== '') {
         opts.attribution = attribution;
