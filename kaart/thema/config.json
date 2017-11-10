@@ -92,7 +92,7 @@
             "url": "https://rawgit.com/buildig/EHAK/master/geojson/omavalitsus.json",
             "type": "geojson.url",
             "srid": 4326,
-            "isVisible": true,
+            "isVisible": false,
             "minZoom": 3,
             "hover":true,
             "info":"<b>{ONIMI}</b>, {MNIMI} : ({OKOOD})</br><small>tegelikult olen täiesti konfigureeritav</small>",
@@ -236,6 +236,30 @@
                         "lineCap": "round",
                         "lineJoin": "round"
                     }
+                }
+            }
+        },
+        {
+            "layername": "Eesti prügilad",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "hover":true,
+            "info":"<b>{maakond}, {omavalitsus}</b><br>{prygila_liik}",
+            "graph": {
+                "x": "ladestatud_tonnid", "y":"aastad",
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+            },
+            "minZoom": 3,
+            "maxZoom": 13,
+            "attribution": "Prügilad: CC BY 4.0 JATS (Jäätmearuandluse infosüsteem) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "style": {
+                "type" : "default",
+                "values": {
+                    "iconUrl":"../static/img/default-icon.svg",
+                    "iconSize": [24, 24],
+                    "iconAnchor": [-12, -12]
                 }
             }
         }

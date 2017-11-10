@@ -342,10 +342,9 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         L.DomEvent.on(
             layer._path, 'mouseover', L.Util.bind(
                 function(layer) {
-                    var feature = layer.feature,
-                        _info = layer.options.info;
-                    if (_info !== undefined) {
-                        _info.update(
+                    var feature = layer.feature;
+                    if (layer.options && layer.options.info) {
+                        layer.options.info.update(
                             feature.properties,
                             layer.options.layername
                         );
@@ -367,10 +366,9 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 function(layer) {
                     var feature = layer.feature,
                         id = layer.options.unique(feature),
-                        paths = _layers[id],
-                        _info = layer.options.info;
-                    if (_info !== undefined) {
-                        _info.update();
+                        paths = _layers[id];
+                    if (layer.options && layer.options.info) {
+                        layer.options.info.update();
                     }
                     for (var i in paths) {
                         var cpath = paths[i];
@@ -583,13 +581,13 @@ var _thematicLayers = {
                         _hoverClassName = layer.options.hoverClassNamePrefix + "-" + geomType;
                     layer.on('mouseover', function(e) {
                         var _layer = e.target,
-                            _path = _layer._path,
-                            _info = _layer.options.info;
+                            _path = _layer._path;
                         if (!L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.addClass(_path, _hoverClassName);
                         }
-                        if (_info !== undefined) {
-                            _info.update(
+                        if (_layer.options.info !== undefined) {
+                            var info = _layer.options.info;
+                            info.update(
                                 _layer.feature.properties,
                                 _layer.options.layername
                             );
@@ -597,13 +595,13 @@ var _thematicLayers = {
                     });
                     layer.on('mouseout', function(e) {
                         var _layer = e.target,
-                            _path = _layer._path,
-                            _info = _layer.options.info;
+                            _path = _layer._path;
                         if (L.DomUtil.hasClass(_path, _hoverClassName)) {
                             L.DomUtil.removeClass(_path, _hoverClassName);
                         }
-                        if (_info !== undefined) {
-                            _info.update();
+                        if (_layer.options.info !== undefined) {
+                            var info = _layer.options.info;
+                            info.update();
                         }
                     });
                 }
@@ -634,7 +632,8 @@ function initThematicLayer(thema) {
         style = Object.assign({}, thema.style),
         constr = _thematicLayers[type]["constructor"],
         opts = Object.assign({}, _thematicLayers[type]["options"]),
-        infoTemplate = thema.info;
+        infoTemplate = thema.info,
+        graph = Object.assign({}, thema.graph);
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
@@ -642,17 +641,15 @@ function initThematicLayer(thema) {
     opts.maxZoom = maxZoom;
     opts.layername = layername;
     if (infoTemplate !== undefined) {
-        var infoopts = {
-            template:infoTemplate
-        }
-        opts.info = L.control.info(infoopts).addTo(map);
+        opts.info = L.control.info({
+            "template":infoTemplate,
+            "graph":graph
+        }).addTo(map);
     }
     if (attribution !== '') {
         opts.attribution = attribution;
     }
     if (hoverClassNamePrefix !== undefined) {
-        // see võiks olla tegelikult kasutaja juhitav, saab cssis määrata
-        // midagi muud kujunduseks kui meie default.
         opts.hoverClassNamePrefix = hoverClassNamePrefix;
     }
     if (style !== undefined) {
