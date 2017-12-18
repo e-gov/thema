@@ -146,7 +146,7 @@ L.Control.Info = L.Control.extend({
         map.on('mousemove', function(e) {
             var currentPos = this.getPosition(),
                 width = map.getSize().x,
-                x = e.layerPoint.x,
+                x = e.containerPoint.x,
                 hand = width / 2 > x ? 'right' : 'left',
                 topbot = this.getPosition().startsWith('top') ? 'top' : 'bottom',
                 position = topbot + hand;
