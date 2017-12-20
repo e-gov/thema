@@ -343,7 +343,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             layer._path, 'mouseover', L.Util.bind(
                 function(layer) {
                     var feature = layer.feature;
-                    if (layer.options && layer.options.info) {
+                    if (layer.options.info) {
                         layer.options.info.update(
                             feature.properties,
                             layer.options.layername
@@ -589,7 +589,8 @@ var _thematicLayers = {
                             var info = _layer.options.info;
                             info.update(
                                 _layer.feature.properties,
-                                _layer.options.layername
+                                _layer.options.layername,
+                                _layer.options.infoTemplate
                             );
                         }
                     });
@@ -601,7 +602,11 @@ var _thematicLayers = {
                         }
                         if (_layer.options.info !== undefined) {
                             var info = _layer.options.info;
-                            info.update();
+                            info.update(
+                                _layer.feature.properties,
+                                _layer.options.layername,
+                                _layer.options.infoTemplate
+                            );
                         }
                     });
                 }
