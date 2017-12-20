@@ -12,6 +12,7 @@
     <script src="../static/js/baselayers.js" type="text/javascript"></script>
     <script src="../static/js/thematic.js" type="text/javascript"></script>
     <script src="../static/js/info.js" type="text/javascript"></script>
+    <script src="../static/js/layercontrol.js" type="text/javascript"></script>
   </head>
   <body>
     <div id="map">
@@ -44,7 +45,7 @@
         );
         var baselayers = {};
         var overlays = {};
-        var layerControl = L.control.layers(baselayers, overlays);
+        var layerControl = L.control.groupedLayer(baselayers, overlays);
         layerControl.addTo(map);
 
         fetch("config.json")

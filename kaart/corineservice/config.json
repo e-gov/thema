@@ -11,7 +11,8 @@
             "hover":false,
             "minZoom": 0,
             "maxZoom": 13,
-            "attribution": "CLC1990: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+            "attribution": "CLC1990: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "groupname": "Corine maakattekaart"
         },
         {
             "layername": "2000",
@@ -22,7 +23,8 @@
             "hover":false,
             "minZoom": 0,
             "maxZoom": 13,
-            "attribution": "CLC2000: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+            "attribution": "CLC2000: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "groupname": "Corine maakattekaart"
         },
         {
             "layername": "2006",
@@ -33,7 +35,8 @@
             "hover":false,
             "minZoom": 0,
             "maxZoom": 13,
-            "attribution": "CLC2006: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+            "attribution": "CLC2006: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "groupname": "Corine maakattekaart"
         },
         {
             "layername": "2012",
@@ -44,7 +47,8 @@
             "hover":false,
             "minZoom": 0,
             "maxZoom": 13,
-            "attribution": "CLC2012: <a href=\"http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R1159\" target=\"_blank\" rel=\"noopener noreferrer\">Copernicus programme of the European Union</a>"
+            "attribution": "CLC2012: <a href=\"http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R1159\" target=\"_blank\" rel=\"noopener noreferrer\">Copernicus programme of the European Union</a>",
+            "groupname": "Corine maakattekaart"
         },
         {
             "layername": "CLC muudatused",

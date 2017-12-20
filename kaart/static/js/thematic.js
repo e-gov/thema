@@ -644,7 +644,8 @@ function initThematicLayer(thema) {
         constr = _thematicLayers[type]["constructor"],
         opts = Object.assign({}, _thematicLayers[type]["options"]),
         infoTemplate = thema.info,
-        graph = Object.assign({}, thema.graph);
+        graph = Object.assign({}, thema.graph),
+        groupname = thema.groupname !== undefined ? thema.groupname : false;
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
@@ -671,5 +672,18 @@ function initThematicLayer(thema) {
     if (isVisible === true) {
         _layer.addTo(map);
     }
-    layerControl.addOverlay(_layer, layername);
+
+    if (groupname !== false) {
+        var groups = layerControl.options.radioGroups;
+        if (groups.indexOf(groupname) === -1) {
+            groups.push(groupname);
+        }
+        var _group = overlays[groupname] === undefined ? {} : overlays[groupname];
+        _group[layername] = _layer;
+        overlays[groupname] = _group;
+        layerControl.addOverlay(_layer, layername, groupname);
+    } else {
+        overlays[layername] = _layer;
+        layerControl.addOverlay(_layer, layername);
+    }
 }

@@ -1,4 +1,4 @@
-﻿#map {
+#map {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -51,6 +51,10 @@
 .hover-Point {
 	cursor:default;
     opacity:0.5;
+}
+
+.leaflet-control-layers-group-option {
+    padding-left:10px;
 }
 
 .info {
