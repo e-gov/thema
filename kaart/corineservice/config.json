@@ -1,0 +1,74 @@
+{
+    "map": {"minZoom":3, "maxZoom":14, "title":"Corine maakattekaart"},
+    "basemaps": ["ortho"],
+    "thema": [
+        {
+            "layername": "1990",
+            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_1990@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "type": "raster.tile",
+            "srid": 3301,
+            "isVisible": false,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "CLC1990: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+        },
+        {
+            "layername": "2000",
+            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2000@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "type": "raster.tile",
+            "srid": 3301,
+            "isVisible": false,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "CLC2000: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+        },
+        {
+            "layername": "2006",
+            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2006@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "type": "raster.tile",
+            "srid": 3301,
+            "isVisible": false,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "CLC2006: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+        },
+        {
+            "layername": "2012",
+            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2012@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "type": "raster.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "CLC2012: <a href=\"http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R1159\" target=\"_blank\" rel=\"noopener noreferrer\">Copernicus programme of the European Union</a>"
+        },
+        {
+            "layername": "CLC muudatused",
+            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": false,
+            "hover":true,
+            "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+        },
+        {
+            "layername": "Haldusjaotus",
+            "url": "http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{-y}.png",
+            "type": "raster.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "attribution": "Hübriidkaart: <a href=\"http://www.maaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Maa-Amet</a>"
+        }
+
+    ]
+}

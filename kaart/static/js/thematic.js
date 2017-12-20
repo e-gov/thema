@@ -612,6 +612,12 @@ var _thematicLayers = {
                 }
             }
         }
+    },
+    "raster.tile": {
+        "constructor": L.tileLayer,
+        "options": {
+
+        }
     }
 };
 
