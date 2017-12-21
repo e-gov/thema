@@ -287,6 +287,13 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             isClosed = ['Polygon', 'MultiPolygon'].indexOf(geomType) >= 0 ? true : false,
             isMulti = geomType.indexOf('Multi') == 0 ? true : false,
             clipPathId = renderer._clipPathId;
+
+        if (options.filter) {
+            if (!options.filter(feature)) {
+                return;
+            }
+        }
+
         if (isMulti == false) {
             var F = L.Class.extend({}),
             _layer = new F();
@@ -557,6 +564,18 @@ var _thematicLayers = {
                         return style.values[val] || {};
                 }
                 return {};
+            },
+            "filter": function(feature){
+                var constraint = this.constraint
+                if (!constraint) {
+                    return true;
+                }
+                var key = constraint.key,
+                    val = constraint.value;
+                if (feature.properties[key] == val){
+                    return true;
+                }
+                return false;
             }
         }
     },
@@ -610,6 +629,10 @@ var _thematicLayers = {
                         }
                     });
                 }
+            },
+            "filter": function(feature) {
+                // TODO
+                return true;
             }
         }
     },
@@ -645,7 +668,9 @@ function initThematicLayer(thema) {
         opts = Object.assign({}, _thematicLayers[type]["options"]),
         infoTemplate = thema.info,
         graph = Object.assign({}, thema.graph),
-        groupname = thema.groupname !== undefined ? thema.groupname : false;
+        groupname = thema.groupname !== undefined ? thema.groupname : false,
+        filterproperty = thema.filterproperty,
+        filtervalue = filterproperty && thema.filtervalue !== undefined ? thema.filtervalue : false;
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
@@ -657,6 +682,12 @@ function initThematicLayer(thema) {
             "template":infoTemplate,
             "graph":graph
         }).addTo(map);
+    }
+    if (filterproperty) {
+        opts.constraint = {
+            key: filterproperty,
+            value: filtervalue
+        };
     }
     if (attribution !== '') {
         opts.attribution = attribution;
