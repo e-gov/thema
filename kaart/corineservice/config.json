@@ -66,6 +66,17 @@
             "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
         },
         {
+            "layername": "clc-muudatus-wms (1990-2000)",
+            "url": "https://gsavalik.envir.ee/geoserver/keskkonnainfo/ows?layers=keskkonnainfo:clc_muudatused&cql_filter=a_aasta=1990",
+            "type": "raster.url",
+            "srid": 3301,
+            "isVisible": true,
+            "hover":false,
+            "minZoom": 0,
+            "maxZoom": 13,
+            "groupname": "CLC muudatused"
+        },
+        {
             "layername": "CLC muudatused (2000-2006)",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
@@ -106,6 +117,5 @@
             "maxZoom": 13,
             "attribution": "Hübriidkaart: <a href=\"http://www.maaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Maa-Amet</a>"
         }
-
     ]
 }

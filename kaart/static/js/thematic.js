@@ -544,6 +544,17 @@ L.geoJSON.url = function(url, options) {
     return new L.GeoJSON.URL(url, options);
 }
 
+L.TileLayer.WMS.include({
+    "defaultWmsParams": {
+        version: '1.1.1',
+        transparent: true,
+        format: 'image/png',
+        styles: '',
+        request: 'GetMap',
+        service: 'WMS'
+    }
+});
+
 var _thematicLayers = {
     "geojson.tile": {
         "constructor": L.tileLayer.geoJson,
@@ -638,6 +649,12 @@ var _thematicLayers = {
     },
     "raster.tile": {
         "constructor": L.tileLayer,
+        "options": {
+
+        }
+    },
+    "raster.url": {
+        "constructor": L.tileLayer.wms,
         "options": {
 
         }
