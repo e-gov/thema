@@ -176,9 +176,11 @@ function updateMap(options) {
   var title = options.title != undefined ? options.title : document.title,
       minZoom = options.minZoom != undefined ? options.minZoom : map.getMinZoom(),
       maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
-      zoom = options.zoom != undefined ? options.zoom : minZoom;
+      zoom = options.zoom != undefined ? options.zoom : minZoom,
+      radioGroups = options.radioGroups !== undefined ? options.radioGroups : [];
   document.title = title;
   map.setMinZoom(minZoom);
   map.setMaxZoom(maxZoom);
   map.setZoom(zoom);
+  layerControl.options.radioGroups = radioGroups;
 }

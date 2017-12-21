@@ -705,10 +705,6 @@ function initThematicLayer(thema) {
     }
 
     if (groupname !== false) {
-        var groups = layerControl.options.radioGroups;
-        if (groups.indexOf(groupname) === -1) {
-            groups.push(groupname);
-        }
         var _group = overlays[groupname] === undefined ? {} : overlays[groupname];
         _group[layername] = _layer;
         overlays[groupname] = _group;

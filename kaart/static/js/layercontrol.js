@@ -299,18 +299,20 @@ L.Control.GroupedLayer = L.Control.extend({
 		    checked = this._map.hasLayer(obj.layer),
 		    input,
             group = obj.group,
+            isRadio = false,
             groupName;
 
         if (group) {
             groupName = group.replace(' ', '-');
+            isRadio = this.options.radioGroups.indexOf(group) !== -1;
         }
 
-		if (obj.overlay && !group) {
+		if (obj.overlay && !isRadio) {
 			input = document.createElement('input');
 			input.type = 'checkbox';
 			input.className = 'leaflet-control-layers-selector';
 			input.defaultChecked = checked;
-        } else if (obj.overlay && group) {
+        } else if (obj.overlay && isRadio) {
             input = this._createRadioElement('leaflet-control-layers-selector-' + groupName, checked);
 		} else {
 			input = this._createRadioElement('leaflet-base-layers', checked);
@@ -337,12 +339,11 @@ L.Control.GroupedLayer = L.Control.extend({
         if (group) {
             var groupId = 'leaflet-control-layers-group-' + groupName;
             holder.className = 'leaflet-control-layers-group-option';
-            //var groupContainer = document.getElementById('leaflet-control-layers-group');
+
             var groupContainer = document.getElementById(groupId);
             if (!groupContainer) {
                 groupContainer = document.createElement('div');
 
-                //groupContainer.id = 'leaflet-control-layers-group'; // peaks tegelt olema unikaalne sellele grupile
                 groupContainer.id = groupId;
 
                 var groupLabel = document.createElement('label'),
