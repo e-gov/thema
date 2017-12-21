@@ -4,7 +4,7 @@
     "thema": [
         {
             "layername": "1990",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_1990@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_1990@EPSG:3301@png/{z}/{x}/{-y}.png",
             "type": "raster.tile",
             "srid": 3301,
             "isVisible": false,
@@ -16,7 +16,7 @@
         },
         {
             "layername": "2000",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2000@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2000@EPSG:3301@png/{z}/{x}/{-y}.png",
             "type": "raster.tile",
             "srid": 3301,
             "isVisible": false,
@@ -28,7 +28,7 @@
         },
         {
             "layername": "2006",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2006@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2006@EPSG:3301@png/{z}/{x}/{-y}.png",
             "type": "raster.tile",
             "srid": 3301,
             "isVisible": false,
@@ -40,7 +40,7 @@
         },
         {
             "layername": "2012",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2012@EPSG:3301@png/{z}/{x}/{-y}.png",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_2012@EPSG:3301@png/{z}/{x}/{-y}.png",
             "type": "raster.tile",
             "srid": 3301,
             "isVisible": true,
@@ -52,7 +52,7 @@
         },
         {
             "layername": "CLC muudatused (1990-2000)",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "filterproperty":"a_aasta",
             "filtervalue":1990,
@@ -67,7 +67,7 @@
         },
         {
             "layername": "CLC muudatused (2000-2006)",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "filterproperty":"a_aasta",
             "filtervalue":2000,
@@ -82,7 +82,7 @@
         },
         {
             "layername": "CLC muudatused (2006-2012)",
-            "url": "http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:clc_muudatused@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "filterproperty":"a_aasta",
             "filtervalue":2006,
