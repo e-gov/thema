@@ -298,7 +298,12 @@ L.Control.GroupedLayer = L.Control.extend({
 		var label = document.createElement('label'),
 		    checked = this._map.hasLayer(obj.layer),
 		    input,
-            group = obj.group;
+            group = obj.group,
+            groupName;
+
+        if (group) {
+            groupName = group.replace(' ', '-');
+        }
 
 		if (obj.overlay && !group) {
 			input = document.createElement('input');
@@ -306,8 +311,7 @@ L.Control.GroupedLayer = L.Control.extend({
 			input.className = 'leaflet-control-layers-selector';
 			input.defaultChecked = checked;
         } else if (obj.overlay && group) {
-            var radioName = group.replace(' ', '-');
-            input = this._createRadioElement('leaflet-control-layers-selector-' + radioName, checked);
+            input = this._createRadioElement('leaflet-control-layers-selector-' + groupName, checked);
 		} else {
 			input = this._createRadioElement('leaflet-base-layers', checked);
 		}
@@ -331,12 +335,15 @@ L.Control.GroupedLayer = L.Control.extend({
         var container = obj.overlay ? this._overlaysList : this._baseLayersList;
 
         if (group) {
+            var groupId = 'leaflet-control-layers-group-' + groupName;
             holder.className = 'leaflet-control-layers-group-option';
-            var groupContainer = document.getElementById('leaflet-control-layers-group');
+            //var groupContainer = document.getElementById('leaflet-control-layers-group');
+            var groupContainer = document.getElementById(groupId);
             if (!groupContainer) {
                 groupContainer = document.createElement('div');
 
-                groupContainer.id = 'leaflet-control-layers-group'; // peaks tegelt olema unikaalne sellele grupile
+                //groupContainer.id = 'leaflet-control-layers-group'; // peaks tegelt olema unikaalne sellele grupile
+                groupContainer.id = groupId;
 
                 var groupLabel = document.createElement('label'),
                     groupName = document.createElement('span');
