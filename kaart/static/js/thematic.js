@@ -357,14 +357,14 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                         );
                     }
                     if (_hoverClassName) {
-                         var id = layer.options.unique(feature),
-                            paths = _layers[id];
-                         for (var i in paths) {
-                             var cpath = paths[i];
-                             if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
-                                 L.DomUtil.addClass(cpath._path, _hoverClassName);
-                             }
-                         }
+                        var id = layer.options.unique(feature),
+                            paths = this._layers[id];
+                        for (var i in paths) {
+                            var cpath = paths[i];
+                            if (!L.DomUtil.hasClass(cpath._path, _hoverClassName)) {
+                                L.DomUtil.addClass(cpath._path, _hoverClassName);
+                            }
+                        }
                     }
                 }, this, layer));
 
@@ -373,7 +373,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 function(layer) {
                     var feature = layer.feature,
                         id = layer.options.unique(feature),
-                        paths = _layers[id];
+                        paths = this._layers[id];
                     if (layer.options && layer.options.info) {
                         layer.options.info.update();
                     }
@@ -702,7 +702,6 @@ function initLayer(thema, options) {
         attribution = thema.attribution !== undefined ? thema.attribution : '',
         hoverClassNamePrefix = thema.hover == true ? 'hover' : undefined,
         style = Object.assign({}, thema.style),
-        options = Object.assign({}, _thematicLayers[type]["options"]),
         infoTemplate = thema.info,
         graph = Object.assign({}, thema.graph),
         groupname = thema.groupname !== undefined ? thema.groupname : false,
@@ -711,6 +710,10 @@ function initLayer(thema, options) {
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
+
+    options.minZoom = minZoom;
+    options.maxZoom = maxZoom;
+
     if (infoTemplate !== undefined) {
         options.info = L.control.info({
             "template":infoTemplate,
@@ -749,8 +752,10 @@ function initThematicLayer(thema) {
             layers = [],
             _layer;
         for (var i=0; i < groupconfig.length; i++) {
-            var c = groupconfig[i];
-            layers.push(initLayer(c, options));
+            var c = groupconfig[i],
+                _type = c.type,
+                _options = Object.assign(options, _thematicLayers[_type]["options"]);
+            layers.push(initLayer(c, _options));
             _layer = L.groupLayer(null, layers);
         }
 

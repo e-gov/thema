@@ -53,7 +53,6 @@
         {
             "layername": "CLC muudatused (1990-2000)",
             "groupname": "CLC muudatused",
-            "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
             "isVisible": false,
             "type": "grouplayer.tile",
             "layers": [
@@ -64,7 +63,8 @@
                     "srid": 3301,
                     "hover":false,
                     "minZoom": 0,
-                    "maxZoom": 13
+                    "maxZoom": 13,
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
                 },
                 {
                     "layername": "CLC muudatused (1990-2000)",
@@ -77,14 +77,26 @@
                     "hover":true,
                     "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
                     "minZoom": 0,
-                    "maxZoom": 13
+                    "maxZoom": 13,
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+                    "style": {
+                        "type" : "default",
+                        "values": {
+                            "fillColor": "#F3F2F0",
+                            "fillOpacity": 0.05,
+                            "color": "#F3F2F0",
+                            "opacity": 0.1,
+                            "weight": 1,
+                            "lineCap": "round",
+                            "lineJoin": "round"
+                        }
+                    }
                 }
             ]
         },
         {
             "layername": "CLC muudatused (2000-2006)",
             "groupname": "CLC muudatused",
-            "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
             "isVisible": false,
             "type": "grouplayer.tile",
             "layers": [
@@ -94,8 +106,9 @@
                     "type": "raster.url",
                     "srid": 3301,
                     "hover":false,
-                    "minZoom": 0,
-                    "maxZoom": 13
+                    "minZoom": 5,
+                    "maxZoom": 13,
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
                 },
                 {
                     "layername": "CLC muudatused (2000-2006)",
@@ -108,16 +121,27 @@
                     "isVisible": false,
                     "hover":true,
                     "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
-                    "minZoom": 0,
+                    "minZoom": 5,
                     "maxZoom": 13,
-                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+                    "style": {
+                        "type" : "default",
+                        "values": {
+                            "fillColor": "#F3F2F0",
+                            "fillOpacity": 0.05,
+                            "color": "#F3F2F0",
+                            "opacity": 0.1,
+                            "weight": 1,
+                            "lineCap": "round",
+                            "lineJoin": "round"
+                        }
+                    }
                 }
             ]
         },
         {
             "layername": "CLC muudatused (2006-2012)",
             "groupname": "CLC muudatused",
-            "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
             "isVisible": true,
             "type": "grouplayer.tile",
             "layers": [
@@ -127,8 +151,9 @@
                     "type": "raster.url",
                     "srid": 3301,
                     "hover":false,
-                    "minZoom": 0,
-                    "maxZoom": 13
+                    "minZoom": 5,
+                    "maxZoom": 13,
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
                 },
                 {
                     "layername": "CLC muudatused (2006-2012)",
@@ -141,9 +166,21 @@
                     "isVisible": false,
                     "hover":true,
                     "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
-                    "minZoom": 0,
+                    "minZoom": 5,
                     "maxZoom": 13,
-                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>"
+                    "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+                    "style": {
+                        "type" : "default",
+                        "values": {
+                            "fillColor": "#F3F2F0",
+                            "fillOpacity": 0.05,
+                            "color": "#F3F2F0",
+                            "opacity": 0.1,
+                            "weight": 1,
+                            "lineCap": "round",
+                            "lineJoin": "round"
+                        }
+                    }
                 }
             ]
         },
@@ -152,7 +189,7 @@
             "url": "http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{-y}.png",
             "type": "raster.tile",
             "srid": 3301,
-            "isVisible": false,
+            "isVisible": true,
             "hover":false,
             "minZoom": 0,
             "maxZoom": 13,
