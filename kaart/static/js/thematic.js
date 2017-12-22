@@ -555,6 +555,19 @@ L.TileLayer.WMS.include({
     }
 });
 
+L.GroupLayer = L.LayerGroup.extend({
+    "options": {
+
+    },
+    initialize: function(layers, options) {
+        L.LayerGroup.prototype.initialize.call(this, layers, options);
+    }
+});
+
+L.groupLayer = function(fakeurl, options) {
+    return new L.GroupLayer(options);
+}
+
 var _thematicLayers = {
     "geojson.tile": {
         "constructor": L.tileLayer.geoJson,
@@ -658,7 +671,14 @@ var _thematicLayers = {
         "options": {
 
         }
+    },
+    "grouplayer.tile": {
+        "constructor": L.groupLayer,
+        "options": {
+
+        }
     }
+
 };
 
 function initThematics(themas) {
@@ -671,9 +691,10 @@ function initThematics(themas) {
     });
 }
 
-function initThematicLayer(thema) {
+function initLayer(thema, options) {
     var urlTemplate = thema.url,
         type = thema.type,
+        constr = _thematicLayers[type]["constructor"],
         layername = thema.layername,
         isVisible = thema.isVisible !== undefined ? thema.isVisible : false,
         minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
@@ -681,8 +702,7 @@ function initThematicLayer(thema) {
         attribution = thema.attribution !== undefined ? thema.attribution : '',
         hoverClassNamePrefix = thema.hover == true ? 'hover' : undefined,
         style = Object.assign({}, thema.style),
-        constr = _thematicLayers[type]["constructor"],
-        opts = Object.assign({}, _thematicLayers[type]["options"]),
+        options = Object.assign({}, _thematicLayers[type]["options"]),
         infoTemplate = thema.info,
         graph = Object.assign({}, thema.graph),
         groupname = thema.groupname !== undefined ? thema.groupname : false,
@@ -691,32 +711,52 @@ function initThematicLayer(thema) {
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
-    opts.minZoom = minZoom;
-    opts.maxZoom = maxZoom;
-    opts.layername = layername;
     if (infoTemplate !== undefined) {
-        opts.info = L.control.info({
+        options.info = L.control.info({
             "template":infoTemplate,
             "graph":graph
         }).addTo(map);
     }
     if (filterproperty) {
-        opts.constraint = {
+        options.constraint = {
             key: filterproperty,
             value: filtervalue
         };
     }
     if (attribution !== '') {
-        opts.attribution = attribution;
+        options.attribution = attribution;
     }
     if (hoverClassNamePrefix !== undefined) {
-        opts.hoverClassNamePrefix = hoverClassNamePrefix;
+        options.hoverClassNamePrefix = hoverClassNamePrefix;
     }
     if (style !== undefined) {
-        opts.styleDescriptor = style;
+        options.styleDescriptor = style;
     }
+    return constr(urlTemplate, options);
+}
 
-    var _layer = constr(urlTemplate, opts);
+function initThematicLayer(thema) {
+    var type = thema.type,
+        layername = thema.layername,
+        isVisible = thema.isVisible !== undefined ? thema.isVisible : false,
+        minZoom = thema.minZoom !== undefined ? thema.minZoom : map.getMinZoom(),
+        maxZoom = thema.maxZoom !== undefined ? thema.maxZoom : map.getMaxZoom(),
+        options = Object.assign({}, _thematicLayers[type]["options"]),
+        groupname = thema.groupname !== undefined ? thema.groupname : false;
+    options.layername = layername;
+    if (type == "grouplayer.tile") {
+        var groupconfig =  thema.layers,
+            layers = [],
+            _layer;
+        for (var i=0; i < groupconfig.length; i++) {
+            var c = groupconfig[i];
+            layers.push(initLayer(c, options));
+            _layer = L.groupLayer(null, layers);
+        }
+
+    } else {
+        var _layer = initLayer(thema, options);
+    }
     if (isVisible === true) {
         _layer.addTo(map);
     }
