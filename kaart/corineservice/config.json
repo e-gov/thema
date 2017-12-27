@@ -25,9 +25,19 @@
                     "type": "geojson.tile",
                     "srid": 3301,
                     "hover":false,
-                    "info": "{maakate_kood}<br>tegelikult võiks siin olla hoopis maakatteklassi nimetus, mitte kood :(",
-                    "minZoom": 6,
+                    "info": "<b>{maakate_kood__kl_maakate__kirjeldus}</b> ({maakate_kood})",
+                    "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC1990: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",
@@ -67,9 +77,19 @@
                     "type": "geojson.tile",
                     "srid": 3301,
                     "hover":false,
-                    "info": "{maakate_kood}<br>tegelikult võiks siin olla hoopis maakatteklassi nimetus, mitte kood :(",
-                    "minZoom": 6,
+                    "info": "<b>{maakate_kood__kl_maakate__kirjeldus}</b> ({maakate_kood})",
+                    "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC2000: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",
@@ -109,9 +129,19 @@
                     "type": "geojson.tile",
                     "srid": 3301,
                     "hover":false,
-                    "info": "{maakate_kood}<br>tegelikult võiks siin olla hoopis maakatteklassi nimetus, mitte kood :(",
-                    "minZoom": 6,
+                    "info": "<b>{maakate_kood__kl_maakate__kirjeldus}</b> ({maakate_kood})",
+                    "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC2006: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",
@@ -150,9 +180,19 @@
                     "type": "geojson.tile",
                     "srid": 3301,
                     "hover":false,
-                    "info": "{maakate_kood}<br>tegelikult võiks siin olla hoopis maakatteklassi nimetus, mitte kood :(",
-                    "minZoom": 6,
+                    "info": "<b>{maakate_kood__kl_maakate__kirjeldus}</b> ({maakate_kood})",
+                    "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC2012: <a href=\"http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32013R1159\" target=\"_blank\" rel=\"noopener noreferrer\">Copernicus programme of the European Union</a>",
                     "style": {
                         "type" : "default",
@@ -194,9 +234,27 @@
                     "groupname": "CLC muudatused",
                     "srid": 3301,
                     "hover":true,
-                    "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
+                    "info": "<table><tbody><tr><th>Aasta</th><th>CLC maakatte klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood__kl_maakate__kirjeldus} ({a_maakate_kood})</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood__kl_maakate__kirjeldus} ({o_maakate_kood})</td></tr></tbody></table>",
                     "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"a_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        },
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"o_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",
@@ -239,9 +297,27 @@
                     "srid": 3301,
                     "isVisible": false,
                     "hover":true,
-                    "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
+                    "info": "<table><tbody><tr><th>Aasta</th><th>CLC maakatte klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood__kl_maakate__kirjeldus} ({a_maakate_kood})</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood__kl_maakate__kirjeldus} ({o_maakate_kood})</td></tr></tbody></table>",
                     "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"a_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        },
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"o_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",
@@ -284,9 +360,27 @@
                     "srid": 3301,
                     "isVisible": false,
                     "hover":true,
-                    "info": "<table><tbody><tr><th>Aasta</th><th>Klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood}</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood}</td></tr></tbody></table>",
+                    "info": "<table><tbody><tr><th>Aasta</th><th>CLC maakatte klass</th></tr><tr><th>{a_aasta}</th><td>{a_maakate_kood__kl_maakate__kirjeldus} ({a_maakate_kood})</td></tr><tr><th>{o_aasta}</th><td>{o_maakate_kood__kl_maakate__kirjeldus} ({o_maakate_kood})</td></tr></tbody></table>",
                     "minZoom": 8,
                     "maxZoom": 13,
+                    "joins": [
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"a_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        },
+                        {
+                            "id": "kl_maakate",
+                            "type": "geojson.url",
+                            "url": "./data/kl_maakate.json",
+                            "join_field":"kood",
+                            "join_to":"o_maakate_kood",
+                            "fields": ["kirjeldus"]
+                        }
+                    ],
                     "attribution": "CLC muudatused: CC BY 4.0 <a href=\"http://keskkonnagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
                     "style": {
                         "type" : "default",

@@ -281,7 +281,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         return tile;
     },
 
-    _renderFeature(renderer, feature, coords, unitsPerTile) {
+    _renderFeature: function(renderer, feature, coords, unitsPerTile) {
         var options = this.options,
             geomType = feature.geometry.type,
             isClosed = ['Polygon', 'MultiPolygon'].indexOf(geomType) >= 0 ? true : false,
@@ -296,9 +296,23 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
 
         if (isMulti == false) {
             var F = L.Class.extend({}),
-            _layer = new F();
+                _layer = new F(),
+                joins = options.joins;
+
+            if (joins) {
+                // Merge seosed.
+                Object.keys(joins).forEach(function(key) {
+                    var j = joins[key],
+                        values = j.getValueFor(feature.properties[key]);
+                    for (var i=0;i<j.options.fields.length;i++) {
+                        var joinField = j.options.fields[i],
+                            joinKey = key + '__'+ j.options.id + '__' + joinField;
+                        feature.properties[joinKey] = values[joinField];
+                    }
+                });
+            }
             _layer.feature = feature;
-            var id = this._cacheLayer(_layer, this.options.unique);
+            var id = this._cacheLayer(_layer, options.unique);
             this._mkFeatureParts(_layer, unitsPerTile, coords)
             this._mkFeatureOptions(_layer, options);
 
@@ -339,7 +353,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
     },
 
-    attachInteraction(layer) {
+    attachInteraction: function(layer) {
         var options = this.options,
             hoverClassNamePrefix = options.hoverClassNamePrefix,
             feature = layer.feature,
@@ -386,7 +400,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 }, this, layer));
     },
 
-    _cacheLayer(layer, fn) {
+    _cacheLayer: function(layer, fn) {
         var id = fn(layer.feature);
         if (id in this._layers) {
             this._layers[id].push(layer);
@@ -504,7 +518,24 @@ L.GeoJSON.URL = L.GeoJSON.extend({
         // hello! hello! is this thing on?
         // pole päris kindel, et see nii peaks toimuma, aga ... :D
         this.get(url).then(function(data){
-            L.GeoJSON.prototype.initialize.call(cls, data, options);
+            if (!options.join) {
+                L.GeoJSON.prototype.initialize.call(cls, data, options);
+            } else {
+                L.Util.setOptions(cls, options);
+                cls.data = {};
+                var key = cls.options.key,
+                    fields = cls.options.fields;
+                for (var i=0; i < data.features.length; i++) {
+                    var f = data.features[i],
+                        idx = f.properties[key],
+                        rval = {};
+                    for (var j=0; j<fields.length; j++) {
+                        var field = fields[j]
+                        rval[field] = f.properties[field];
+                    }
+                    cls.data[idx] = rval;
+                }
+            }
         }, function(error) {
             console.error(error);
         });
@@ -537,7 +568,10 @@ L.GeoJSON.URL = L.GeoJSON.extend({
     },
     getAttribution: function() {
         return this.options.attribution;
-    }
+    },
+    getValueFor: function(val) {
+        return this.data[val];
+    },
 });
 
 L.geoJSON.url = function(url, options) {
@@ -706,7 +740,8 @@ function initLayer(thema, options) {
         graph = Object.assign({}, thema.graph),
         groupname = thema.groupname !== undefined ? thema.groupname : false,
         filterproperty = thema.filterproperty,
-        filtervalue = filterproperty && thema.filtervalue !== undefined ? thema.filtervalue : false;
+        filtervalue = filterproperty && thema.filtervalue !== undefined ? thema.filtervalue : false,
+        joins = thema.joins;
     if (constr === undefined) {
         throw ("Undefined thematic layer type: ", type);
     }
@@ -719,6 +754,19 @@ function initLayer(thema, options) {
             "template":infoTemplate,
             "graph":graph
         }).addTo(map);
+    }
+    if (joins) {
+        options.joins = {};
+        for (var i=0; i<joins.length; i++) {
+            var j = joins[i],
+                jurl = j.url,
+                jid = j.id,
+                jfrom = j.join_field,
+                jfield = j.fields,
+                jto = j.join_to,
+                jcls = _thematicLayers[j.type]["constructor"];
+            options.joins[jto] = jcls(jurl, {join:true, key:jfrom, fields:jfield, id:jid});
+        }
     }
     if (filterproperty) {
         options.constraint = {

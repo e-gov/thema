@@ -43,9 +43,9 @@
                 [62.85582385242469,35.106036681873526]]),
           }
         );
-        var baselayers = {};
-        var overlays = {};
-        var layerControl = L.control.groupedLayer(baselayers, overlays);
+        var baselayers = {},
+            overlays = {},
+            layerControl = L.control.groupedLayer(baselayers, overlays);
         layerControl.addTo(map);
 
         fetch("config.json")
