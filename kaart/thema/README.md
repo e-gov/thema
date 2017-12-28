@@ -156,17 +156,19 @@ andmestikust joonistada graafikuid [d3js](https://d3js.org/) abil. Kui
 
 `filterproperty` - valikuline võimalus `geojson.tile` konstruktoriga hallatava
 teemakihi väärtuste filtreerimiseks. See määrab ära GeoJSON
-`Feature.properties` väärtuse, mille järgi filtreeritakse
+`Feature.properties` väärtuse, mille järgi filtreeritakse. Kui
+`thema.filterproperty` puudub, siis filtreerimist ei toimu.
 
 `filtervalue` - valikuline võimalus `geojson.tile` konstruktoriga hallatava
 teemakihi väärtuste filtreerimiseks. Määrab ära `thema.filterproperty`
-väärtuse, millele vastavad objektid teemakihil kuvatakse.
+väärtuse, millele vastavad objektid teemakihil kuvatakse. Kui
+`thema.filtervalue` puudub, siis filtreerimist ei toimu.
 
 `attribution` - valikuline viide teemakihi andmete omanikule ja
 kasutustingimustele.
 
-`layers` - grupikihi (`thema.type == 'grouplayer.tile'`) kaardikihtide
-koosseis. Kohustuslik kui `thema.type == 'grouplayer.tile'`. Iga element siin
+`layers` - kohustuslik kui `thema.type == 'grouplayer.tile'`. Loetleb grupikihi
+teemakaardikihtide koosseisu.  Iga element siin
 massiivis on omaette [`thema`](#thema) objekt. Grupikiht koosneb iseseisvatest
 teemakaardikhtidest ja grupikihi sees omakorda olevaid grupikihte ei
 arvestata.
