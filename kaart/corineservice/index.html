@@ -9,6 +9,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.15/proj4.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4leaflet/1.0.1/proj4leaflet.min.js" type="text/javascript"></script>
     <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.9/marked.min.js" type="text/javascript"></script>
     <script src="../static/js/baselayers.js" type="text/javascript"></script>
     <script src="../static/js/thematic.js" type="text/javascript"></script>
     <script src="../static/js/info.js" type="text/javascript"></script>
@@ -48,15 +49,26 @@
             layerControl = L.control.groupedLayer(baselayers, overlays);
         layerControl.addTo(map);
 
+        var aboutWindow = L.control.about();
+        aboutWindow.addTo(map);
+
         fetch("config.json")
-          .then(function(response) {
-            return response.json();
-          })
-          .then(function(config) {
-            updateMap(config.map);
-            initBasemaps(config.basemaps);
-            initThematics(config.thema);
-          });
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(config) {
+                updateMap(config.map);
+                initBasemaps(config.basemaps);
+                initThematics(config.thema);
+
+                fetch("about.md")
+                    .then(function(response){
+                        return response.text();
+                    })
+                    .then(function(aboutText) {
+                        aboutWindow.update(null, marked(aboutText));
+                    });
+            });
 
     </script>
   </body>

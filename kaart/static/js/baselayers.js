@@ -183,4 +183,5 @@ function updateMap(options) {
   map.setMaxZoom(maxZoom);
   map.setZoom(zoom);
   layerControl.options.radioGroups = radioGroups;
+  aboutWindow.update(title);
 }

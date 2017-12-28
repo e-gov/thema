@@ -14,6 +14,7 @@ failis.
 - [proj4js](https://github.com/proj4js/proj4js) ja
 [proj4Leaflet](https://github.com/kartena/Proj4Leaflet)
 - [d3js](https://d3js.org)
+- [marked.js](https://github.com/chjj/marked)
 
 ## thema teemakaartide näited
 **thema** ülesehitamisel püüame lähtuda sellest, et teemakaardirakendusi saaks hallata ka GitHubis. Olemasolevast funktsionaalsusest saab ülevaate e-gov/thema _master_ haru [näidisrakenduse eelvaatest](https://e-gov.github.io/thema/kaart/thema/).

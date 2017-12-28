@@ -195,3 +195,91 @@ L.Control.Info = L.Control.extend({
 L.control.info = function(options){
     return new L.Control.Info(options);
 }
+
+L.Control.About = L.Control.extend({
+    options: {
+        position: 'topleft',
+        collapsed: true,
+        aboutText: '',
+        title: 'Selle kaardi kohta'
+    },
+    onAdd: function(map) {
+        this._map = map;
+        var className = 'leaflet-control-about',
+            container = this._container = L.DomUtil.create('div', className);
+        container.setAttribute('aria-haspopup', true);
+        L.DomUtil.addClass(container, 'leaflet-bar');
+
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.disableScrollPropagation(container);
+
+        if (this.options.collapsed) {
+            L.DomEvent.on(container, 'mouseenter', this.expand, this);
+            L.DomEvent.on(container, 'mouseleave', this.collapse, this);
+            this._map.on('click', this.collapse, this);
+        }
+
+        var link = this._aboutLink = L.DomUtil.create('a', className + '-toggle', container);
+        link.href = '#';
+        link.title = this.options.title;
+        link.innerHTML = 'i';
+
+        if (L.Browser.touch) {
+            L.DomEvent.on(link, 'click', L.DomEvent.stop);
+            L.DomEvent.on(link, 'click', this.expand, this);
+        } else {
+        	L.DomEvent.on(link, 'focus', this.expand, this);
+        }
+
+        var form = this._form = L.DomUtil.create('form', className + '-list'),
+            title = this._title = L.DomUtil.create('h1', className + '-title', form),
+            about = this._about = L.DomUtil.create('div', className + '-textarea', form);
+        title.innerHTML = '';
+        about.innerHTML = this.options.aboutText;
+        container.appendChild(form);
+        if (!this.options.collapsed) {
+            this.expand();
+        }
+        return container;
+    },
+    expand: function() {
+        var container = this._container,
+            expandedClass = 'leaflet-control-about-expanded';
+        this._form.style.height = null;
+        if (!L.DomUtil.hasClass(container, expandedClass)) {
+            L.DomUtil.removeClass(container, 'leaflet-bar');
+            L.DomUtil.addClass(container, expandedClass);
+        }
+        var acceptableHeight = this._map.getSize().y - container.offsetTop - 30;
+        if (acceptableHeight < this._form.clientHeight) {
+            L.DomUtil.addClass(this._form, 'leaflet-control-about-scrollbar');
+            this._form.style.height = acceptableHeight + 'px';
+        } else {
+            L.DomUtil.removeClass(this._form, 'leaflet-control-about-scrollbar');
+        }
+        return this;
+    },
+    collapse: function() {
+        var container = this._container,
+            expandedClass = 'leaflet-control-about-expanded';
+        if (L.DomUtil.hasClass(container, expandedClass)) {
+            L.DomUtil.addClass(container, 'leaflet-bar');
+            L.DomUtil.removeClass(container, expandedClass);
+        }
+        return this;
+    },
+    update: function(title, aboutText) {
+        if (title) {
+            this._title.innerHTML = title;
+        }
+        if (aboutText) {
+            this._about.innerHTML = aboutText;
+        } else {
+            this._about.innerHTML = this.options.aboutText;
+        }
+    }
+});
+
+L.control.about = function(options) {
+    return new L.Control.About(options);
+}

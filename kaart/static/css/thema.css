@@ -110,3 +110,51 @@ text.value {
     fill: steelblue;
     fill-opacity: .9;
 }
+
+
+.leaflet-control-about-toggle {
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	display: block;
+}
+
+.leaflet-control-about {
+	box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+	background: #fff;
+	border-radius: 4px;
+}
+
+.leaflet-control-about-toggle {
+	font: bold 18px 'Lucida Console', Monaco, monospace;
+	width: 36px;
+	height: 36px;
+	border-radius: 4px;
+    padding-top: 2px
+}
+
+.leaflet-control-about .leaflet-control-about-list,
+.leaflet-control-about-expanded .leaflet-control-about-toggle {
+	display: none;
+}
+
+.leaflet-control-about-expanded .leaflet-control-about-list {
+	display: block;
+	position: relative;
+}
+
+.leaflet-control-about-expanded {
+	padding: 6px 6px 6px 6px;
+	color: #333;
+	background: #fff;
+	max-width: 450px;
+    min-width: 30px;
+    min-height: 32px;
+    border-radius: 4px;
+    border: 2px solid rgba(0,0,0,0.2);
+	background-clip: padding-box;
+}
+
+.leaflet-control-about-scrollbar {
+	overflow-y: scroll;
+	padding-right: 5px;
+	}
