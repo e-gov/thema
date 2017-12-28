@@ -9,7 +9,7 @@
             "srid": 3301,
             "isVisible": true,
             "hover":true,
-            "info":"<b>{maakond}, {omavalitsus}</b><br>{prygila_liik}",
+            "info":"{prygila_nimi} ({prygila_liik})\\n**{maakond}, {omavalitsus}**\\nKäitajad:\\n{kaitajad}",
             "graph": {
                 "x": "ladestatud_tonnid", "y":"aastad",
                 "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
