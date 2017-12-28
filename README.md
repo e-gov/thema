@@ -6,7 +6,7 @@ teemakaardirakendused.
 @TODO kellele ja milleks me seda teeme
 
 **thema** kaardirakenduse Konfiguratsiooniparameetrid ja rakenduse seadistus
-on täpsemalt lahti kirjeldatud [thema/README.md](./thema/README.md) failis.
+on täpsemalt lahti kirjeldatud [kaart/thema/README.md](./kaart/thema/README.md) failis.
 
 ## Komponendid (a.k.a _dependencies_)
 - [Leaflet](https://github.com/Leaflet/Leaflet)
