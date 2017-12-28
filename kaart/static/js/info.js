@@ -175,8 +175,8 @@ L.Control.Info = L.Control.extend({
         var title = layername || '',
             heading = L.Util.template(
                 '<h3>{title}</h3>', {"title":title}),
-            body = L.Util.template(
-                template, properties),
+            body = marked(L.Util.template(
+                template, properties).replace(/(\\r\\n|\\n|\\r)/gm, '<br>')),
             infotempl = '{heading}{body}</br>';
         this._container.innerHTML = L.Util.template(
             infotempl,
