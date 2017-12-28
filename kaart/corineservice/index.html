@@ -2,7 +2,7 @@
 <html lang="et">
   <head>
     <meta charset="utf-8">
-    <title>Teemakaart: blah</title>
+    <title>Teemakaart: thema</title>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/thema.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.1/leaflet.js" type="text/javascript"></script>
@@ -63,6 +63,11 @@
 
                 fetch("about.md")
                     .then(function(response){
+                        if (!response.ok) {
+                            console.error(
+                                response.url + " vastas HTTP: " + response.status + "("+response.statusText+")");
+                            return ""
+                        };
                         return response.text();
                     })
                     .then(function(aboutText) {
