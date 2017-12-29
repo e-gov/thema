@@ -6,7 +6,7 @@ teemakaardirakendused.
 **thema** eesmärgiks on pakkuda võimalust lihtsalt genereeritavaid
 teemakaardirakendusi. Eelduseks on vabalt (avalikult) pakutavate andmekihtide
 olemasolu, mida on võimalik üle veebi tarbida. **thema** on suuteline kuvama
-rasterandmeid WMS ja TMS teenustest ning (GeoJSONi)[http://geojson.org/]
+rasterandmeid WMS ja TMS teenustest ning [GeoJSONi](http://geojson.org/)
 struktuuris vektorandmeid TMS teenustest või peaaegu-et suvalistest
 veebipäringutest. Rasterandmetega on võimalik edasi anda väga keerulisi
 kaardikujundusi, samas vektorandmed pakuvad interaktiivsuse - kaardiobjektide
