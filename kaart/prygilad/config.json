@@ -1,0 +1,80 @@
+{
+    "map": {"minZoom":3, "maxZoom":14, "title":"Eesti prügilad"},
+    "basemaps": ["ortho", "kaart"],
+    "thema": [
+        {
+            "groupname": "Eesti prügilad",
+            "layername": "Suletud prügilad (2017)",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": false,
+            "hover":true,
+            "filterproperty": "on_suletud",
+            "filtervalue": "1",
+            "info":"{prygila_nimi} ({prygila_liik})\\nStaatus: **{on_suletud__kl_onsuletud__kirjeldus}**\\nOmavalitsus: **{maakond}, {omavalitsus}**\\nL-EST'97 asukoht: **{e}**,**{n}**\\nKäitajad:\\n{kaitajad}",
+            "graph": {
+                "x": "ladestatud_tonnid", "y":"aastad",
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+            },
+            "minZoom": 3,
+            "maxZoom": 13,
+            "joins":[
+                {
+                    "id": "kl_onsuletud",
+                    "type": "geojson.url",
+                    "url": "./data/kl_onsuletud.json",
+                    "join_to": "on_suletud",
+                    "join_field": "kood",
+                    "fields": ["kirjeldus"]
+                }
+            ],
+            "attribution": "Prügilad: CC BY 4.0 JATS (Jäätmearuandluse infosüsteem) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "style": {
+                "type" : "default",
+                "values": {
+                    "iconUrl":"../static/img/o-darkblue-gray.png",
+                    "iconSize": [24, 24],
+                    "iconAnchor": [-12, -12]
+                }
+            }
+        },
+        {
+            "groupname": "Eesti prügilad",
+            "layername": "Avatud prügilad (2017)",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "hover":true,
+            "filterproperty": "on_suletud",
+            "filtervalue": "0",
+            "info":"{prygila_nimi} ({prygila_liik})\\nStaatus: **{on_suletud__kl_onsuletud__kirjeldus}**\\nOmavalitsus: **{maakond}, {omavalitsus}**\\nL-EST'97 asukoht: **{e}**,**{n}**\\nKäitajad:\\n{kaitajad}",
+            "graph": {
+                "x": "ladestatud_tonnid", "y":"aastad",
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+            },
+            "minZoom": 3,
+            "maxZoom": 13,
+            "joins":[
+                {
+                    "id": "kl_onsuletud",
+                    "type": "geojson.url",
+                    "url": "./data/kl_onsuletud.json",
+                    "join_to": "on_suletud",
+                    "join_field": "kood",
+                    "fields": ["kirjeldus"]
+                }
+            ],
+            "attribution": "Prügilad: CC BY 4.0 JATS (Jäätmearuandluse infosüsteem) - <a href=\"http://keskkonnaagentuur.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaagentuur</a>",
+            "style": {
+                "type" : "default",
+                "values": {
+                    "iconUrl":"../static/img/default-icon.png",
+                    "iconSize": [24, 24],
+                    "iconAnchor": [-12, -12]
+                }
+            }
+        }
+    ]
+}
