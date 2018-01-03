@@ -147,7 +147,7 @@ L.SVG.Tile = L.SVG.extend({
             if ((markerBounds.max.y + dy) > this._size.y) {
                 maxy = this._size.y - (markerBounds.max.y + dy);
             }
-            return Math.min(...[minx, miny, maxx, maxy]);
+            return Math.min(minx, miny, maxx, maxy);
         } else {
             return false;
         }
