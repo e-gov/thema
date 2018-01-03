@@ -48,7 +48,7 @@ L.SVG.Tile = L.SVG.extend({
         L.SVG.prototype._initContainer.call(this);
     },
 
-    _initClipPath(tileX, tileY, tileZ) {
+    _initClipPath: function(tileX, tileY, tileZ) {
         var clipPath = L.SVG.create('clipPath'),
             defs = L.SVG.create('defs'),
             clipPathId = this._clipPathId = 'tileClipPath_' + tileZ + '_' + tileX + '_' + tileY;
@@ -147,7 +147,7 @@ L.SVG.Tile = L.SVG.extend({
             if ((markerBounds.max.y + dy) > this._size.y) {
                 maxy = this._size.y - (markerBounds.max.y + dy);
             }
-            return Math.min(...[minx, miny, maxx, maxy]);
+            return Math.min(minx, miny, maxx, maxy);
         } else {
             return false;
         }
