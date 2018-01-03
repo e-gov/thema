@@ -48,7 +48,7 @@ L.SVG.Tile = L.SVG.extend({
         L.SVG.prototype._initContainer.call(this);
     },
 
-    _initClipPath(tileX, tileY, tileZ) {
+    _initClipPath: function(tileX, tileY, tileZ) {
         var clipPath = L.SVG.create('clipPath'),
             defs = L.SVG.create('defs'),
             clipPathId = this._clipPathId = 'tileClipPath_' + tileZ + '_' + tileX + '_' + tileY;
