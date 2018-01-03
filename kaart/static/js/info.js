@@ -132,7 +132,8 @@ L.control.graph = function(parent, options){
 L.Control.Info = L.Control.extend({
     options: {
         position: 'bottomright',
-        template: ''
+        template: '',
+        na: ''
     },
     initialize: function(options) {
         for (var opt in options) {
@@ -175,7 +176,7 @@ L.Control.Info = L.Control.extend({
         var title = layername || '',
             heading = L.Util.template(
                 '<h3>{title}</h3>', {"title":title}),
-            body = marked(L.Util.template(
+            body = marked(this.templateSoft(
                 template, properties).replace(/(\\r\\n|\\n|\\r)/gm, '<br>')),
             infotempl = '{heading}{body}</br>';
         this._container.innerHTML = L.Util.template(
@@ -188,7 +189,21 @@ L.Control.Info = L.Control.extend({
                 this._container, {"properties":properties, "setup":gfx}
             );
         }
-
+    },
+    templateSoft: function(str, data) {
+        /* Basically the same as L.Util.template, but will not
+            raise an exception if key not present in data */
+        var na = this.options.na;
+        return str.replace(L.Util.templateRe, function (str, key) {
+    		var value = data[key];
+            /* instead of throwing an error, simply use '' */
+    		if (value === undefined) {
+                value = na;
+    		} else if (typeof value === 'function') {
+    			value = value(data);
+    		}
+    		return value;
+    	});
     }
 });
 
