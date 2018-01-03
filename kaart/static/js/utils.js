@@ -32,3 +32,16 @@ if (typeof Object.assign != 'function') {
         configurable: true
     });
 }
+
+/** polyfill String.startsWith toele IEs.
+*   -------------------------------------
+*   Allikas: https://stackoverflow.com/a/30867255
+*/
+
+
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position) {
+        position = position || 0;
+        return this.indexOf(searchString, position) === position;
+    };
+}
