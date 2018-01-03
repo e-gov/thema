@@ -52,7 +52,7 @@
             "srid": 3301,
             "isVisible": true,
             "hover":true,
-            "info":"<b>{nimi}</b></br>{kirjeldus}\\nFotod:{fotod}",
+            "info":"<b>{nimi}</b></br>{kirjeldus}\\nFotod: {fotod}",
             "minZoom": 3,
             "attribution": "Ristipuud: CC BY 4.0 <a href=\"http://keskkonnaamet.ee\" target=\"_blank\" rel=\"noopener noreferrer\">Keskkonnaamet</a>",
             "style": {
