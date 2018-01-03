@@ -30,6 +30,12 @@ muu-kui-EPSG:4326 koordinaatsüsteemidega.
 - [d3js](https://d3js.org) aitab muuta andmed graafikuteks ja muudeks visuaalideks
 - [marked.js](https://github.com/chjj/marked) tuleb appi siis kui on kaardipildi
 kõrvale vaja rääkida juttu, mis andmed need kaardil üldse on.
+- [fetch.js](https://github.com/github/fetch) ja
+[promise-polyfill](https://github.com/taylorhakes/promise-polyfill) aitavad
+**thema** rakendustel töötada ka IE peal.
+
+**thema** kasutab neid komponente CDNide kaudu, ise midagi paketeerimata või
+jagamata.
 
 ## thema teemakaartide näited
 **thema** ülesehitamisel püüame lähtuda sellest, et teemakaardirakendusi saaks
