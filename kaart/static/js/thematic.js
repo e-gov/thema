@@ -122,6 +122,14 @@ L.SVG.Tile = L.SVG.extend({
         }
         style._iconAnchor = loc;
         L.DomUtil.setPosition(icon, loc);
+
+        /** IE11 teema: punktobjektid kuvatakse valesse kohta, vt
+            https://github.com/e-gov/thema/issues/35
+        */
+        if (L.Browser.ie3d) {
+            icon.setAttribute("transform", "translate(" + loc.x + " " + loc.y + ")");
+        }
+        
         this._locs.push(loc);
     },
 
