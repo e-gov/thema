@@ -122,6 +122,14 @@ L.SVG.Tile = L.SVG.extend({
         }
         style._iconAnchor = loc;
         L.DomUtil.setPosition(icon, loc);
+
+        /** IE11 teema: punktobjektid kuvatakse valesse kohta, vt
+            https://github.com/e-gov/thema/issues/35
+        */
+        if (L.Browser.ie3d) {
+            icon.setAttribute("transform", "translate(" + loc.x + " " + loc.y + ")");
+        }
+        
         this._locs.push(loc);
     },
 
@@ -303,9 +311,10 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 // Merge seosed.
                 Object.keys(joins).forEach(function(key) {
                     var j = joins[key],
-                        values = j.getValueFor(feature.properties[key]);
-                    for (var i=0;i<j.options.fields.length;i++) {
-                        var joinField = j.options.fields[i],
+                        values = j.getValueFor(feature.properties[key]),
+                        fields = j.options.fields || [];
+                    for (var i=0;i<fields.length;i++) {
+                        var joinField = fields[i],
                             joinKey = key + '__'+ j.options.id + '__' + joinField;
                         feature.properties[joinKey] = values[joinField];
                     }
@@ -570,6 +579,7 @@ L.GeoJSON.URL = L.GeoJSON.extend({
         return this.options.attribution;
     },
     getValueFor: function(val) {
+        if (!this.data) {return {}};
         return this.data[val];
     },
 });
