@@ -21,11 +21,13 @@ L.Control.Graph = L.Control.extend({
             margin = this.margin,
             valueMargin = this.valueMargin,
             width = this.width,
-            height = this.height,
+            height,
             barHeight = this.barHeight,
             barPadding = this.barPadding,
             labelWidth = this.labelWidth
             data = this.data;
+
+        this.height = height = ((barHeight + barPadding) * data.length + barPadding) + axisMargin;
 
         svg = d3.select('.graph')
             .append("svg")
@@ -63,7 +65,7 @@ L.Control.Graph = L.Control.extend({
 
         xAxis = d3.svg.axis()
             .scale(scale)
-            .tickSize(-this.height)
+            .tickSize(-this.height + axisMargin)
             .orient("bottom");
 
         bar.append("rect")
@@ -75,7 +77,7 @@ L.Control.Graph = L.Control.extend({
 
         axis = svg.insert("g",":first-child")
             .attr("class", "axisHorizontal")
-            .attr("transform", "translate(" + (margin + labelWidth + 20) + ","+ ((barHeight + barPadding) * data.length + barPadding)+")")
+            .attr("transform", "translate(" + (margin + labelWidth) + ","+ ((barHeight + barPadding) * data.length + barPadding)+")")
             .call(xAxis)
             .selectAll('text')
             .attr("y", 0)
@@ -84,7 +86,7 @@ L.Control.Graph = L.Control.extend({
             .attr("transform", "rotate(-35)")
             .style("text-anchor", "end");
 
-        svg.attr("height", ((barHeight + barPadding) * data.length + barPadding) + 30 );
+        svg.attr("height", this.height + axisMargin);
         this.addAxisTitles(svg);
     },
     parseDataFromProperties: function() {
@@ -102,16 +104,17 @@ L.Control.Graph = L.Control.extend({
         return data;
     },
     addAxisTitles: function(svg) {
-        var w = svg.attr("width"),
-            h = svg.attr("height"),
+        var w = this.width,
+            h = this.height,
             m = this.margin,
+            am = this.axisMargin,
             xLabel = this.options.setup.xLabel,
             yLabel = this.options.setup.yLabel;
 
         if (xLabel !== undefined) {
             svg.append("text")
                 .attr("text-anchor", "middle")
-                .attr("transform", "translate("+ (w/2) +","+ (h) +")")
+                .attr("transform", "translate("+ (w/2) +","+ (h + am/2) +")")
                 .text(xLabel);
         }
 
