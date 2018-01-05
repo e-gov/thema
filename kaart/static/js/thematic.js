@@ -129,7 +129,6 @@ L.SVG.Tile = L.SVG.extend({
         if (L.Browser.ie3d) {
             icon.setAttribute("transform", "translate(" + loc.x + " " + loc.y + ")");
         }
-        
         this._locs.push(loc);
     },
 
@@ -524,8 +523,6 @@ L.tileLayer.geoJson = function(urlTemplate, options) {
 L.GeoJSON.URL = L.GeoJSON.extend({
     initialize: function(url, options) {
         var cls = this;
-        // hello! hello! is this thing on?
-        // pole päris kindel, et see nii peaks toimuma, aga ... :D
         this.get(url).then(function(data){
             if (!options.join) {
                 L.GeoJSON.prototype.initialize.call(cls, data, options);
@@ -545,7 +542,9 @@ L.GeoJSON.URL = L.GeoJSON.extend({
                     cls.data[idx] = rval;
                 }
             }
+            cls.fire('loaded');
         }, function(error) {
+            cls.fire('loaderror');
             console.error(error);
         });
     },
@@ -581,7 +580,7 @@ L.GeoJSON.URL = L.GeoJSON.extend({
     getValueFor: function(val) {
         if (!this.data) {return {}};
         return this.data[val];
-    },
+    }
 });
 
 L.geoJSON.url = function(url, options) {
@@ -726,13 +725,18 @@ var _thematicLayers = {
 };
 
 function initThematics(themas) {
-    themas.forEach(function(thema) {
+    var order = {numLoaded:0};
+    for (var z=0;z<themas.length;z++) {
+        /* order.numLoaded - kui palju thema-kihte on juba kaardile lisatud.
+        *  z - selle konkreetse kihi järjekorranumber.
+        */
+        var thema = themas[z];
         try {
-            initThematicLayer(thema);
+            initThematicLayer(thema, order, z);
         } catch (err) {
             console.error(err);
         }
-    });
+    }
 }
 
 function initLayer(thema, options) {
@@ -765,19 +769,6 @@ function initLayer(thema, options) {
             "graph":graph
         }).addTo(map);
     }
-    if (joins) {
-        options.joins = {};
-        for (var i=0; i<joins.length; i++) {
-            var j = joins[i],
-                jurl = j.url,
-                jid = j.id,
-                jfrom = j.join_field,
-                jfield = j.fields,
-                jto = j.join_to,
-                jcls = _thematicLayers[j.type]["constructor"];
-            options.joins[jto] = jcls(jurl, {join:true, key:jfrom, fields:jfield, id:jid});
-        }
-    }
     if (filterproperty) {
         options.constraint = {
             key: filterproperty,
@@ -793,10 +784,56 @@ function initLayer(thema, options) {
     if (style !== undefined) {
         options.styleDescriptor = style;
     }
-    return constr(urlTemplate, options);
+
+    var stillToLoad = 0,
+        onJoinsReady = function() {
+            return new Promise(function(resolve, reject) {
+                var waitForJoins = function () {
+                    if (stillToLoad == 0) {
+                        resolve();
+                    } else {
+                        window.requestAnimationFrame(waitForJoins);
+                    }
+                };
+                waitForJoins();
+            });
+        }
+
+    if (joins) {
+        options.joins = {};
+        for (var i=0; i<joins.length; i++) {
+            stillToLoad += 1;
+            var j = joins[i],
+                jurl = j.url,
+                jid = j.id,
+                jfrom = j.join_field,
+                jfield = j.fields,
+                jto = j.join_to,
+                jcls = _thematicLayers[j.type]["constructor"],
+                join = jcls(jurl, {join:true, key:jfrom, fields:jfield, id:jid});
+
+            L.DomEvent.on(join, 'loaded', function(e) {
+                stillToLoad -= 1;
+            });
+            L.DomEvent.on(join, 'loaderror', function(e) {
+                stillToLoad -= 1;
+                console.error('Smth went horribly wrong during loading ', jurl);
+            });
+            /* Mis saab siis kui joini laadimisel on viga? */
+            options.joins[jto] = join;
+        }
+    }
+
+    return new Promise(function(resolve, reject) {
+        onJoinsReady().then(
+            function() {
+                resolve(constr(urlTemplate, options));
+            }
+        );
+    });
 }
 
-function initThematicLayer(thema) {
+function initThematicLayer(thema, order, z) {
     var type = thema.type,
         layername = thema.layername,
         isVisible = thema.isVisible !== undefined ? thema.isVisible : false,
@@ -805,32 +842,79 @@ function initThematicLayer(thema) {
         options = Object.assign({}, _thematicLayers[type]["options"]),
         groupname = thema.groupname !== undefined ? thema.groupname : false;
     options.layername = layername;
+    options.minZoom = minZoom;
+    options.maxZoom = maxZoom;
+
+    var onLayerReady = function(stat, current, l) {
+        /* Ootame selle kihi lisamiseks õiget hetke:
+        *  eelduseks: järjekorras kõik eelnevad kihid on kaardile lisatud
+        *  ning kiht ise on initsialiseeritud.
+        */
+        return new Promise(function(resolve, reject) {
+            var waitForLayers = function() {
+                if (stat.numLoaded == current && l !== undefined) {
+                    // ok, we're good to go!
+                    resolve();
+                } else {
+                    window.requestAnimationFrame(waitForLayers);
+                }
+            };
+            waitForLayers();
+        });
+    }
+
     if (type == "grouplayer.tile") {
         var groupconfig =  thema.layers,
             layers = [],
-            _layer;
+            grouplayer;
         for (var i=0; i < groupconfig.length; i++) {
             var c = groupconfig[i],
                 _type = c.type,
-                _options = Object.assign(options, _thematicLayers[_type]["options"]);
-            layers.push(initLayer(c, _options));
-            _layer = L.groupLayer(null, layers);
+                _options = Object.assign({}, _thematicLayers[_type]["options"]);
+            _options = Object.assign(_options, options)
+
+            initLayer(c, _options).then(
+                function(layer) {
+                    layers.push(layer);
+                    if (layers.length == groupconfig.length) {
+                        /* Kui kõik grupis olevad kihid on laetud */
+                        return L.groupLayer(null, layers);
+                    }
+                }
+            ).then(function(layer) {
+                /* ootame signaali, et selle grupikihi järjekord kaardile minna  */
+                onLayerReady(order, z, layer).then(function() {
+                    addLayer(layer, isVisible, layername, groupname);
+                    order.numLoaded += 1;
+                });
+            });
         }
 
     } else {
-        var _layer = initLayer(thema, options);
+        initLayer(thema, options).then(
+            /* ootame signaali, et selle kihi järjekord kaardile minna  */
+            function(layer) {
+                onLayerReady(order, z, layer).then(function() {
+                    addLayer(layer, isVisible, layername, groupname);
+                    order.numLoaded += 1;
+                });
+            }
+        );
     }
+}
+
+function addLayer(layer, isVisible, layername, groupname) {
     if (isVisible === true) {
-        _layer.addTo(map);
+        layer.addTo(map);
     }
 
     if (groupname !== false) {
         var _group = overlays[groupname] === undefined ? {} : overlays[groupname];
-        _group[layername] = _layer;
+        _group[layername] = layer;
         overlays[groupname] = _group;
-        layerControl.addOverlay(_layer, layername, groupname);
+        layerControl.addOverlay(layer, layername, groupname);
     } else {
-        overlays[layername] = _layer;
-        layerControl.addOverlay(_layer, layername);
+        overlays[layername] = layer;
+        layerControl.addOverlay(layer, layername);
     }
 }
