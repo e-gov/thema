@@ -8,13 +8,15 @@ L.Control.Graph = L.Control.extend({
     barPadding : 5,
     labelWidth : 0,
 
-    initialize: function(parent, options) {
+    initialize: function(parent, options, id) {
         L.Control.prototype.initialize.call(this, options);
         this.parent = parent;
         this.options = options;
+        this.id = id;
         var container = this.container = L.DomUtil.create('div', 'graph', this.parent);
+        container.setAttribute("id", "graph-" + id);
         this.data = this.parseDataFromProperties();
-        this.drawGraph()
+        this.drawGraph();
     },
     drawGraph: function() {
         var axisMargin = this.axisMargin,
@@ -25,11 +27,14 @@ L.Control.Graph = L.Control.extend({
             barHeight = this.barHeight,
             barPadding = this.barPadding,
             labelWidth = this.labelWidth
-            data = this.data;
+            data = this.data,
+            id = 'graph-' + this.id;
 
         this.height = height = ((barHeight + barPadding) * data.length + barPadding) + axisMargin;
 
-        svg = d3.select('.graph')
+        d3.select("#" + id).select("svg").remove();
+
+        svg = d3.select("#" + id)
             .append("svg")
             .attr("width", width)
             .attr("height", height);
@@ -128,8 +133,8 @@ L.Control.Graph = L.Control.extend({
 
 });
 
-L.control.graph = function(parent, options){
-    return new L.Control.Graph(parent, options);
+L.control.graph = function(parent, options, id){
+    return new L.Control.Graph(parent, options, id);
 }
 
 L.Control.Info = L.Control.extend({
@@ -143,25 +148,45 @@ L.Control.Info = L.Control.extend({
             this.options[opt] = options[opt];
         }
         L.Control.prototype.initialize.call(this, options);
+        L.Util.stamp(this);
     },
     onAdd: function(map) {
         this._map = map;
         var container = this._container = L.DomUtil.create('div', 'info');
-        map.on('mousemove', function(e) {
-            var currentPos = this.getPosition(),
-                width = map.getSize().x,
-                x = e.containerPoint.x,
-                hand = width / 2 > x ? 'right' : 'left',
-                topbot = this.getPosition().startsWith('top') ? 'top' : 'bottom',
-                position = topbot + hand;
-            if (position != currentPos) {
-                this.setPosition(position);
-            }
-        }, this);
+
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.disableScrollPropagation(container);
+
+        map.on('mousemove', this._updatePosition, this);
         L.DomUtil.addClass(this._container, 'info-hidden');
         return this._container;
     },
+    onRemove: function () {
+        this._map.off('mousemove', this._updatePosition, this);
+    },
+    _updatePosition: function(e) {
+        if (this.options.frozen) {
+            /* Kui infoaken fikseeritud, siis ei muuda asukohta, lihtsalt
+               välju.
+            */
+            return;
+        }
+        var currentPos = this.getPosition(),
+            width = map.getSize().x,
+            x = e.containerPoint.x,
+            hand = width / 2 > x ? 'right' : 'left',
+            topbot = this.getPosition().startsWith('top') ? 'top' : 'bottom',
+            position = topbot + hand;
+        if (position != currentPos) {
+            this.setPosition(position);
+        }
+    },
     update: function(properties, layername) {
+        var frozen = this.options.frozen;
+        if (frozen) {
+            /* Kui infoaken fikseeritud, siis välju */
+            return this;
+        }
         var opts = this.options,
             template = opts.template,
             gfx = opts.graph;
@@ -188,8 +213,9 @@ L.Control.Info = L.Control.extend({
         );
 
         if (Object.keys(gfx).length > 0) {
-            L.control.graph(
-                this._container, {"properties":properties, "setup":gfx}
+            var id = L.Util.stamp(this);
+            this._graph = L.control.graph(
+                this._container, {"properties":properties, "setup":gfx}, id
             );
         }
     },
@@ -207,6 +233,44 @@ L.Control.Info = L.Control.extend({
     		}
     		return value;
     	});
+    },
+    freeze: function(layer) {
+        if (!layer) {
+            this.unfreeze();
+            this.update();
+            return;
+        }
+
+        var properties = layer.feature.properties,
+            layername = layer.options.layername;
+
+        if (!this.options.frozen && layer) {
+            /* Infoaken polnud fikseeritud, kuid fikseerime */
+            this.options.frozen = true;
+            this.update(properties, layername);
+        } else if (this.options.frozen && layer){
+            /* Infoaken oli fikseeritud, jätkame nii */
+            this.options.frozen = false;
+            this.update(properties, layername);
+            this.options.frozen = true;
+        }
+    },
+    unfreeze: function() {
+        this.options.frozen = false;
+        this.update();
+        return;
+    }
+});
+
+L.Map.include({
+    closeInfo: function() {
+        var layers = this._layers;
+        for (var layerId in layers) {
+            var layer = layers[layerId];
+            if (layer.options && layer.options.info) {
+                layer.options.info.unfreeze();
+            }
+        }
     }
 });
 

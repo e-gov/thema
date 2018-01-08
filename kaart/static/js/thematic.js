@@ -406,6 +406,16 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                         }
                     }
                 }, this, layer));
+        L.DomEvent.on(
+            layer._path, 'click', L.Util.bind(
+                function(e) {
+                    if (layer.options && layer.options.info) {
+                        layer.options.info.freeze(layer);
+                        L.DomEvent.stop(e); // don't propagate to map underneath
+                    }
+                }, this
+            )
+        );
     },
 
     _cacheLayer: function(layer, fn) {
@@ -737,6 +747,9 @@ function initThematics(themas) {
             console.error(err);
         }
     }
+    map.on('click', function(e) {
+        this.closeInfo();
+    });
 }
 
 function initLayer(thema, options) {
