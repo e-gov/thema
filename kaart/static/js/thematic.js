@@ -552,10 +552,21 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             layer._path, 'click', L.Util.bind(
                 function(e) {
                     if (layer.options && layer.options.info) {
-                        layer.options.info.freeze(layer);
-                        L.DomEvent.stop(e); // don't propagate to map underneath
-                        var id = e.target.attributes.id.value;
-                        this._markFeature(L.Util.stamp(this), id);
+                        L.DomEvent.stop(e);// don't propagate to map underneath
+                        var marked = this.marked[0],
+                            layerId = L.Util.stamp(this),
+                            featureId = e.target.attributes.id.value,
+                            markMe = this.options.hoverClassNamePrefix !== undefined ? true : false;
+                        if (!markMe) {
+                            return;
+                        }
+                        if (!marked || featureId != marked.options.featureId) {
+                            layer.options.info.freeze(layer);
+                            this._markFeature(layerId, featureId);
+                        } else {
+                            layer.options.info.freeze();
+                            this._clearMarked(layerId);
+                        }
                     }
                 }, this
             )
