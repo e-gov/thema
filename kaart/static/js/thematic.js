@@ -188,10 +188,10 @@ L.TileLayer.Ajax = L.TileLayer.extend({
             var s = req.status;
             if ((s >= 200 && s < 300) || s === 304) {
                 tile.datum = JSON.parse(req.responseText);
-                tile.renderer.fire('load');
+                tile.renderer.fire('tileload');
             } else {
                 tile.datum = false;
-                tile.renderer.fire('error');
+                tile.renderer.fire('tileerror');
             }
         };
     },
@@ -225,6 +225,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     options : {
         rendererFactory: L.svg.tile
     },
+    marked : [],
 
     createTile: function (coords, done) {
         var renderer = this.options.rendererFactory(this.getTileSize(), this.options, coords);
@@ -239,8 +240,8 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         tile.crs = this._map.options.crs;
         tile.layer = this;
 
-        L.DomEvent.on(renderer, 'load', L.Util.bind(this._tileOnLoad, this, this.renderTile, tile));
-        L.DomEvent.on(renderer, 'error', L.Util.bind(this._tileOnError, this, done, tile));
+        L.DomEvent.on(renderer, 'tileload', L.Util.bind(this._tileOnLoad, this, this.renderTile, tile));
+        L.DomEvent.on(renderer, 'tileerror', L.Util.bind(this._tileOnError, this, done, tile));
 
         L.Util.requestAnimFrame(done.bind(coords, null, null));
         this._loadTile(tile);
@@ -287,6 +288,147 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         }
         return tile;
     },
+    _roundPrecision: function(z) {
+        // See on liiga häkk!!
+        var tolerances = [3,3,3,3,4,4,5,5,6];
+        return tolerances[z];
+    },
+
+    _markFeature: function(layerId, featureId) {
+        var featureMarker,
+            z = this._map.getZoom(),
+            precision = this._roundPrecision(z),
+            layers = this._layers[featureId],
+            layer = layers[0],
+            geomType = layer.feature.geometry.type;
+
+        if (geomType != 'Point') {
+            // LineString/Polygon võivad paikneda
+            // mitmel erineval kahhlil ja olla ka ülekattega.
+            // lisaks on siin läbi käimata, mis saab juhul kui jooned...
+            var unioned,
+                features = [];
+            for (var i=0;i<layers.length;i++) {
+                layer = layers[i];
+                var feature = turf.clone(layer.feature);
+                features.push(feature);
+            }
+            //console.log(JSON.stringify(features));
+            var fc = turf.featureCollection(features),
+                unioned;
+            turf.featureEach(fc, function(currentFeature, featureIdx) {
+                turf.truncate(currentFeature, {precision:precision, mutate:true});
+                turf.cleanCoords(currentFeature, {mutate:true});
+                var rings = [],
+                    ring = [],
+                    previousGeomIdx = 0;
+                turf.coordEach(currentFeature, function (
+                    currentCoord, coordIndex, featureIndex, multiFeatureIndex,
+                    geometryIndex) {
+                        if (previousGeomIdx != geometryIndex) {
+                            if (ring.length > 3) {
+                                rings.push(ring);
+                            }
+                            ring = [];
+                            previousGeomIdx = geometryIndex;
+                        }
+                        // enne currentCoord ringi pushimist tuleks
+                        // kontrollida, et sellist koordinaatpaari siin kettas
+                        // juba ei oleks. Lihtsustamise tõttu võib juhtuda.
+                        ring.push(currentCoord);
+                    }
+                );
+
+                // lisame viimase läbikäidud ketta ka
+                if (ring.length > 3) {
+                    rings.push(ring);
+                }
+
+                if (rings.length > 0) {
+                    currentFeature.geometry.coordinates = rings;
+                    fc.features[featureIdx] = turf.buffer(currentFeature, 0, {units:'meters'});
+                } else {
+                    fc.features[featureIdx] = null;
+                }
+            });
+
+            turf.rewind(fc, {mutate:true});
+            var unioned;
+
+            turf.featureEach(fc, function(currentFeature, featureIdx) {
+                if (!currentFeature) {
+                    return;
+                }
+                var kinks = turf.kinks(currentFeature);
+                if (kinks.features.length > 0) {
+                    var unkinked = turf.unkinkPolygon(currentFeature),
+                        lines = [];
+                    turf.featureEach(unkinked, function(cur, idx) {
+                        var line = turf.polygonToLine(cur)
+                        lines.push(line);
+                    });
+                    var linework = turf.combine(turf.featureCollection(lines));
+                    currentFeature = turf.buffer(turf.lineToPolygon(linework), 0, {units:'meters'});
+                }
+                if (!unioned) {
+                    unioned = currentFeature;
+                } else {
+                    try {
+                        unioned = turf.union(unioned, currentFeature);
+                    } catch (e) {
+                        console.log('PREV', JSON.stringify(unioned));
+                        console.log('CURR', JSON.stringify(currentFeature));
+                        throw(e);
+                    }
+                }
+            });
+
+            if (unioned) {
+                turf.rewind(unioned, {mutate: true})
+                featureMarker = L.geoJson(unioned, {
+                    layerId: layerId,
+                    featureId: featureId,
+                    interactive:false,
+                    className:"clicked"
+                });
+            }
+
+        } else {
+            // siin on arvutustel mingi probl kui ikooni iconAnchor pole täpselt
+            // ikooni keskel.
+            var width = Number(layer._path.getAttribute("width")),
+                height = Number(layer._path.getAttribute("height")),
+                radius = width >= height ? width/2 + 5 : height/2 + 5,
+                iconAnchor = layer.options.iconAnchor,
+                coordinates = layer.feature.geometry.coordinates,
+                pnt = this._map.latLngToLayerPoint(L.latLng(coordinates[1], coordinates[0])),
+                anchored = pnt.add(L.point(width / 2, height / 2).add(L.point(iconAnchor))),
+                anchoredLatLng = this._map.layerPointToLatLng(anchored);
+
+            featureMarker = L.circleMarker(anchoredLatLng, {
+                featureId: featureId,
+                layerId: layerId,
+                radius:radius,
+                interactive:false,
+                className:"clicked"
+            });
+            featureMarker.feature = layer.feature;
+        }
+        // enne markeeringu lisamist, laseme vana maha:
+        this._clearMarked(layerId);
+
+        this.marked.push(featureMarker);
+        featureMarker.addTo(this._map);
+        featureMarker.off('mouseover');
+    },
+
+    _clearMarked: function(layerId) {
+        for (var i=0; i < this.marked.length; i++) {
+            var featureMarker = this.marked[i];
+            featureMarker.removeFrom(this._map);
+        }
+        this.marked = [];
+    },
 
     _renderFeature: function(renderer, feature, coords, unitsPerTile) {
         var options = this.options,
@@ -305,7 +447,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
             var F = L.Class.extend({}),
                 _layer = new F(),
                 joins = options.joins;
-
+            _layer.tilePoint = coords;
             if (joins) {
                 // Merge seosed.
                 Object.keys(joins).forEach(function(key) {
@@ -320,7 +462,6 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 });
             }
             _layer.feature = feature;
-            var id = this._cacheLayer(_layer, options.unique);
             this._mkFeatureParts(_layer, unitsPerTile, coords)
             this._mkFeatureOptions(_layer, options);
 
@@ -335,6 +476,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 renderer._addIcon(_layer);
             }
 
+            var id = this._cacheLayer(_layer, options.unique);
             _layer._path.setAttribute('pointer-events', 'all');
             _layer._path.setAttribute('id', id);
 
@@ -406,6 +548,29 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                         }
                     }
                 }, this, layer));
+        L.DomEvent.on(
+            layer._path, 'click', L.Util.bind(
+                function(e) {
+                    if (layer.options && layer.options.info) {
+                        L.DomEvent.stop(e);// don't propagate to map underneath
+                        var marked = this.marked[0],
+                            layerId = L.Util.stamp(this),
+                            featureId = e.target.attributes.id.value,
+                            markMe = this.options.hoverClassNamePrefix !== undefined ? true : false;
+                        if (!markMe) {
+                            return;
+                        }
+                        if (!marked || featureId != marked.options.featureId) {
+                            layer.options.info.freeze(layer);
+                            this._markFeature(layerId, featureId);
+                        } else {
+                            layer.options.info.freeze();
+                            this._clearMarked(layerId);
+                        }
+                    }
+                }, this
+            )
+        );
     },
 
     _cacheLayer: function(layer, fn) {
@@ -415,6 +580,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         } else {
             this._layers[id] = [layer];
         }
+        this.fire('cacheAdd', {featureId:id, layerId:L.Util.stamp(this)});
         return id;
     },
 
@@ -428,7 +594,9 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                 var ring = rings[i],
                     part = [];
                 for (var j in ring) {
-                    this._getCoords(ring[j], part, coords, unitsPerTile);
+                    var _ring = [];
+                    this._getCoords(ring[j], _ring, part, coords, unitsPerTile);
+                    ring[j] = _ring;
                 }
                 if (part.length > 0) {
                     parts.push(part);
@@ -437,29 +605,37 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         } else if (geomType == 'LineString') {
             var part = [];
             for (var i in rings) {
-                var ring = rings[i];
-                this._getCoords(ring, part, coords, unitsPerTile);
+                var ring = rings[i],
+                    _ring = [];
+                this._getCoords(ring, _ring, part, coords, unitsPerTile);
+                ring[i] = _ring;
                 if (part.length > 0) {
                     parts.push(part);
                 }
             }
         } else if (geomType == 'Point') {
-            var part = [];
-            this._getCoords(rings, part, coords, unitsPerTile);
+            var part = [],
+                _ring = [];
+            this._getCoords(rings, _ring, part, coords, unitsPerTile);
+            feature.geometry.coordinates = _ring;
             if (part.length > 0) {
                 parts.push(part);
             }
         }
+        turf.rewind(layer.feature, {mutate:true});
     },
 
-    _getCoords: function(ring, part, coords, unitsPerTile) {
+    _getCoords: function(ring, _ring, part, coords, unitsPerTile) {
         try {
             var dx = coords.x * unitsPerTile,
                 dy = coords.y * unitsPerTile,
                 point = L.point(ring[0] - dx, ring[1] + dy),
-                ltlng = this._map.options.crs.projection.unproject(point),
-                tilePnt = this._map.options.crs.latLngToPoint(ltlng, coords.z);
+                trueLatLng = this._map.options.crs.projection.unproject(L.point(ring)),
+                ltlng = this._map.options.crs.projection.unproject(point);
+            var tilePnt = this._map.options.crs.latLngToPoint(ltlng, coords.z);
             part.push(tilePnt);
+            _ring.push(trueLatLng.lng);
+            _ring.push(trueLatLng.lat);
         } catch (e) {
             console.log(ring, coords);
             throw(e);
@@ -492,15 +668,40 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         L.TileLayer.Ajax.prototype.initialize.call(this, url, options);
         this.datum = null;
         this._layers = {};
+        this.hasLoaded = false;
+
+        L.DomEvent.on(this, 'tileload', function(e) {
+            this.hasLoaded = false;
+        })
+
+        L.DomEvent.on(this, 'load', function(e) {
+            this.hasLoaded = true;
+        });
+
+        L.DomEvent.on(this, 'cacheAdd', function(e) {
+            if (this.hasLoaded == true) {
+                var marked = this.marked[0],
+                    featureId = e.featureId,
+                    layerId = e.layerId;
+                if (marked && marked.options.featureId == featureId) {
+                    this._markFeature(layerId, featureId);
+                }
+            }
+        });
+
+        L.DomEvent.on(this, 'cacheUnload', function(e) {
+            //this._clearMarked();
+            //this._map.closeInfo();
+        })
     },
     onAdd: function (map) {
         this._map = map;
         L.TileLayer.Ajax.prototype.onAdd.call(this, map);
-        _layers = this._layers;
         map.on('zoomstart', function(e) {
             // tühjendame viimasel zoomil kogutud cache'i
-            for (var layer in _layers) delete _layers[layer];
-        });
+            this._layers = {};
+            this.fire('cacheUnload');
+        }, this);
     },
     onRemove: function (map) {
         L.TileLayer.Ajax.prototype.onRemove.call(this, map);
@@ -737,6 +938,9 @@ function initThematics(themas) {
             console.error(err);
         }
     }
+    map.on('click', function(e) {
+        this.closeInfo();
+    });
 }
 
 function initLayer(thema, options) {

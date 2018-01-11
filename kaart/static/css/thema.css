@@ -53,6 +53,16 @@
     opacity:0.5;
 }
 
+.clicked {
+    stroke: url(#black-to-white);
+    stroke-width: 9;
+    stroke-opacity: 1;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    fill: transparent;
+    fill-opacity: 0;
+}
+
 .leaflet-control-layers-group-option {
     padding-left:10px;
 }
