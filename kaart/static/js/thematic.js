@@ -564,7 +564,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                             layer.options.info.freeze(layer);
                             this._markFeature(layerId, featureId);
                         } else {
-                            layer.options.info.freeze();
+                            layer.options.info.unfreeze();
                             this._clearMarked(layerId);
                         }
                     }

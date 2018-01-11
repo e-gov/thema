@@ -264,7 +264,6 @@ L.Control.Info = L.Control.extend({
 
 L.Map.include({
     closeInfo: function() {
-        console.log('closeInfo');
         var layers = this._layers;
         for (var layerId in layers) {
             var layer = layers[layerId];
