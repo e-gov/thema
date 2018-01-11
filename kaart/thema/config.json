@@ -292,6 +292,16 @@
                     "iconAnchor": [-12, -12]
                 }
             }
+        },
+        {
+            "layername": "Mingid polügonid",
+            "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/eelis:kr_jarv@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
+            "type": "geojson.tile",
+            "srid": 3301,
+            "isVisible": true,
+            "minZoom": 0,
+            "hover":true,
+            "info":"**{nimi}**"
         }
 
     ]

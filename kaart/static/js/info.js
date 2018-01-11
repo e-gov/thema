@@ -264,11 +264,13 @@ L.Control.Info = L.Control.extend({
 
 L.Map.include({
     closeInfo: function() {
+        console.log('closeInfo');
         var layers = this._layers;
         for (var layerId in layers) {
             var layer = layers[layerId];
             if (layer.options && layer.options.info) {
                 layer.options.info.unfreeze();
+                layer._clearMarked(layerId);
             }
         }
     }
