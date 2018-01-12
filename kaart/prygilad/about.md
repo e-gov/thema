@@ -1,5 +1,5 @@
-Prügilate kaardikihil on kuvatud vahemikus 2001-2017 prügilatega seonduv avalik
-info. Kaardikihilt on leitav töötavate ja suletud prügilate asukohad ja
+Prügilate kaardikihil on kuvatud alates 2001 prügilatega seonduv avalik info.
+Kaardikihilt on leitav töötavate ja suletud prügilate asukohad ja
 aastate lõikes käitajad ning ladestatud kogused.
 
 Tegutsevate ja suletud prügilate kaardikihte  saab sisse ja välja lülitada
@@ -10,11 +10,11 @@ paremas nurgas olevast kaardikihtide valikust.
 | ![Töötav prügila](../static/img/default-icon.png) | Töötav prügila - toimub jäätmete ladestamine. |
 | ![Suletud prügila](../static/img/o-darkblue-gray.png) | Suletud prügila - jäätmete ladestamist ei toimu. |
 
-Prügilal võib käitaja vahetuda ja seega on välja toodud iga käitaja käitamise
-periood prügila kohta.
+Prügila käitaja võib vahetuda, seega on välja toodud iga käitaja puhul prügila
+käitamise periood.
 
-Ladestatud kogused on aasta jooksul kõikide ladestatud jäätmekoodide summa ja
-sisaldab nii ohtlike kui ka tavajäätmeid.
+Ladestatud kogus on kalendriaasta jooksul prügilasse ladestatud jäätmekoguste
+summa.
 
 Andmed on allalaetavad csv kujul [siit](./data/ladestused.csv) ja
 küsimustega andmete kohta palume pöörduda
@@ -23,7 +23,7 @@ küsimustega andmete kohta palume pöörduda
 Ladestatud koguste kohta on täiendavat infot [Jäätmearuandluse infosüsteemi kodulehelt](
 https://jats.keskkonnainfo.ee/main.php?page=statquery2public).
 
-Viited avatud prügilatele ja lisainfot prügilate kohta leiab
+Lisainfot prügilate kohta leiab
 [Keskkonnaministeeriumi kodulehelt](http://www.envir.ee/et/prugilad).
 
 ## Avalikud kaarditeenused
