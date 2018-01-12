@@ -4,7 +4,7 @@
     "thema": [
         {
             "groupname": "Eesti prügilad",
-            "layername": "Suletud prügilad (2017)",
+            "layername": "Suletud prügilad (2016)",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
@@ -41,7 +41,7 @@
         },
         {
             "groupname": "Eesti prügilad",
-            "layername": "Avatud prügilad (2017)",
+            "layername": "Töötavad prügilad (2016)",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
