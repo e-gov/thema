@@ -128,6 +128,17 @@ text.value {
 	border-radius: 4px;
 }
 
+.leaflet-control-about-textarea table,
+.leaflet-control-about-textarea td,
+.leaflet-control-about-textarea th {
+    border: none;
+}
+
+.leaflet-control-about-textarea table tbody tr td img {
+    text-align: center;
+    vertical-align: text-bottom;
+}
+
 .leaflet-control-about-toggle {
 	font: bold 18px 'Lucida Console', Monaco, monospace;
 	width: 36px;
