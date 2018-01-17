@@ -62,7 +62,7 @@
         layerControl.addTo(map);
 
         var aboutWindow = L.control.about();
-        aboutWindow.addTo(map);
+
 
         fetch("config.json")
             .then(function(response) {
@@ -83,6 +83,7 @@
                         return response.text();
                     })
                     .then(function(aboutText) {
+                        aboutWindow.addTo(map);
                         aboutWindow.update(null, marked(aboutText));
                     });
             });
