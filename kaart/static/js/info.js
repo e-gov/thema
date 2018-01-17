@@ -310,8 +310,8 @@ L.Control.About = L.Control.extend({
             closeLink.href = '#';
             closeLink.title = 'Sulge';
             closeLink.innerHTML = '+';
-            L.DomEvent.on(closeLink, 'click', this.collapse, this);
             L.DomEvent.on(closeLink, 'click', L.DomEvent.stop);
+            L.DomEvent.on(closeLink, 'click', this.collapse, this);
         }
 
         var link = this._aboutLink = L.DomUtil.create('a', className + '-toggle', container);
@@ -340,6 +340,12 @@ L.Control.About = L.Control.extend({
             this.expand();
         }
         return container;
+    },
+    onRemove: function() {
+        this._map.on('resize', this.resize, this);
+        if (this.options.collapsed) {
+            this._map.off('click', this.collapse, this);
+        }
     },
     expand: function() {
         var container = this._container,
