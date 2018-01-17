@@ -178,10 +178,12 @@ function updateMap(options) {
       maxZoom = options.maxZoom != undefined ? options.maxZoom : map.getMaxZoom(),
       zoom = options.zoom != undefined ? options.zoom : minZoom,
       radioGroups = options.radioGroups !== undefined ? options.radioGroups : [];
+      aboutOnClick = options.aboutOnClick !== undefined ? options.aboutOnClick : false;
   document.title = title;
   map.setMinZoom(minZoom);
   map.setMaxZoom(maxZoom);
   map.setZoom(zoom);
   layerControl.options.radioGroups = radioGroups;
-  aboutWindow.update(title);
+  aboutWindow.options.collapsed = aboutOnClick == false;
+  aboutWindow.options.title = title;
 }

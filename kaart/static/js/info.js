@@ -293,6 +293,8 @@ L.Control.About = L.Control.extend({
         container.setAttribute('aria-haspopup', true);
         L.DomUtil.addClass(container, 'leaflet-bar');
 
+        this._map.on('resize', this.resize, this);
+
         L.DomEvent.disableClickPropagation(container);
         L.DomEvent.disableScrollPropagation(container);
 
@@ -300,6 +302,15 @@ L.Control.About = L.Control.extend({
             L.DomEvent.on(container, 'mouseenter', this.expand, this);
             L.DomEvent.on(container, 'mouseleave', this.collapse, this);
             this._map.on('click', this.collapse, this);
+        } else {
+            // kui this.options.collapsed == false,
+            // siis avaneb aken kliki peale ja sulgemiseks vajame nuppu.
+            // vt https://github.com/e-gov/thema/issues/40
+            var closeLink = this._closeLink = L.DomUtil.create('a', className +'-close');
+            closeLink.href = '#';
+            closeLink.title = 'Sulge';
+            closeLink.innerHTML = '+';
+            L.DomEvent.on(closeLink, 'click', this.collapse, this);
         }
 
         var link = this._aboutLink = L.DomUtil.create('a', className + '-toggle', container);
@@ -307,7 +318,7 @@ L.Control.About = L.Control.extend({
         link.title = this.options.title;
         link.innerHTML = 'i';
 
-        if (L.Browser.touch) {
+        if (L.Browser.touch || !this.options.collapsed) {
             L.DomEvent.on(link, 'click', L.DomEvent.stop);
             L.DomEvent.on(link, 'click', this.expand, this);
         } else {
@@ -320,6 +331,10 @@ L.Control.About = L.Control.extend({
         title.innerHTML = '';
         about.innerHTML = this.options.aboutText;
         container.appendChild(form);
+        if (closeLink) {
+            container.appendChild(closeLink);
+        }
+
         if (!this.options.collapsed) {
             this.expand();
         }
@@ -328,37 +343,59 @@ L.Control.About = L.Control.extend({
     expand: function() {
         var container = this._container,
             expandedClass = 'leaflet-control-about-expanded';
-        this._form.style.height = null;
-        if (!L.DomUtil.hasClass(container, expandedClass)) {
+        if (!this.isExpanded()) {
             L.DomUtil.removeClass(container, 'leaflet-bar');
             L.DomUtil.addClass(container, expandedClass);
         }
-        var acceptableHeight = this._map.getSize().y - container.offsetTop - 30;
-        if (acceptableHeight < this._form.clientHeight) {
-            L.DomUtil.addClass(this._form, 'leaflet-control-about-scrollbar');
-            this._form.style.height = acceptableHeight + 'px';
-        } else {
-            L.DomUtil.removeClass(this._form, 'leaflet-control-about-scrollbar');
+        this.resize();
+        if (this._closeLink) {
+            this._closeLink.style.visibility = "visible";
         }
         return this;
     },
     collapse: function() {
-        var container = this._container,
-            expandedClass = 'leaflet-control-about-expanded';
-        if (L.DomUtil.hasClass(container, expandedClass)) {
+        var container = this._container;
+        if (this.isExpanded()) {
             L.DomUtil.addClass(container, 'leaflet-bar');
             L.DomUtil.removeClass(container, expandedClass);
+            if (this._closeLink) {
+                this._closeLink.style.visibility = "hidden";
+            }
         }
         return this;
     },
     update: function(title, aboutText) {
         if (title) {
             this._title.innerHTML = title;
+        } else {
+            this._title.innerHTML = this.options.title;
         }
         if (aboutText) {
             this._about.innerHTML = aboutText;
         } else {
             this._about.innerHTML = this.options.aboutText;
+        }
+    },
+    isExpanded: function() {
+        var container = this._container;
+            expandedClass = 'leaflet-control-about-expanded';
+        return L.DomUtil.hasClass(container, expandedClass);
+    },
+    resize: function() {
+        if (!this.isExpanded()) {
+            return;
+        }
+        this._form.style.height = null;
+        var container = this._container
+            acceptableHeight = this._map.getSize().y - container.offsetTop - 30;
+        if (this._form.clientHeight == 0) {
+            acceptableHeight -= 80;
+        }
+        if (acceptableHeight < this._form.clientHeight || this._form.clientHeight == 0) {
+            L.DomUtil.addClass(this._form, 'leaflet-control-about-scrollbar');
+            this._form.style.height = acceptableHeight + 'px';
+        } else {
+            L.DomUtil.removeClass(this._form, 'leaflet-control-about-scrollbar');
         }
     }
 });

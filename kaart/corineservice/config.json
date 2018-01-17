@@ -1,5 +1,5 @@
 {
-    "map": {"minZoom":3, "maxZoom":14, "title":"Corine maakattekaart", "radioGroups":["Corine maakattekaart"]},
+    "map": {"minZoom":3, "maxZoom":14, "title":"Corine maakattekaart", "radioGroups":["Corine maakattekaart"],"aboutOnClick":true},
     "basemaps": ["ortho"],
     "thema": [
         {

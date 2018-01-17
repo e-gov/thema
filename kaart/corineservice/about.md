@@ -10,6 +10,8 @@ kaardistusi ja kaardistusaastate võrdluses arvutatud muudatustekihte.
 
 ## CLC legend
 
+<a href="https://gsavalik.envir.ee/geoserver/keskkonnainfo/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=keskkonnainfo:clc_2012&format=image/png" target="_blank" rel="noopener noreferrer">Ava legend eraldi aknas</a>
+
 ![CLC Legend](https://gsavalik.envir.ee/geoserver/keskkonnainfo/ows?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=keskkonnainfo:clc_2012&format=image/png)
 
 ## CLC muudatused
