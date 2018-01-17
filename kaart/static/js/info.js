@@ -311,6 +311,7 @@ L.Control.About = L.Control.extend({
             closeLink.title = 'Sulge';
             closeLink.innerHTML = '+';
             L.DomEvent.on(closeLink, 'click', this.collapse, this);
+            L.DomEvent.on(closeLink, 'click', L.DomEvent.stop);
         }
 
         var link = this._aboutLink = L.DomUtil.create('a', className + '-toggle', container);
