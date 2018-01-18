@@ -206,7 +206,7 @@ L.TileLayer.Ajax = L.TileLayer.extend({
     },
 
     _reset: function () {
-        L.TileLayer.prototype._reset.apply(this, arguments);
+        //L.TileLayer.prototype._reset.apply(this, arguments);
         for (var i = 0; i < this._requests.length; i++) {
             this._requests[i].abort();
         }
@@ -697,16 +697,20 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
     onAdd: function (map) {
         this._map = map;
         L.TileLayer.Ajax.prototype.onAdd.call(this, map);
-        map.on('zoomstart', function(e) {
-            // tühjendame viimasel zoomil kogutud cache'i
-            this._layers = {};
-            this.fire('cacheUnload');
-        }, this);
+        map.on('zoomstart', this._onZoom, this);
     },
     onRemove: function (map) {
+        map.off('zoomstart', this._onZoom, this);
         L.TileLayer.Ajax.prototype.onRemove.call(this, map);
     },
-
+    _onZoom: function(e) {
+        // canceldame pooleliolevad requestid
+        this._reset();
+        // tühjendame viimasel zoomil kogutud cache'i
+        this._layers = {};
+        // ja anname teada, et cache on tühjaks lastud
+        this.fire('cacheUnload');
+    },
     _tileOnLoad: function (done, tile) {
         if (tile.datum === null) { return null; }
         done(tile);
