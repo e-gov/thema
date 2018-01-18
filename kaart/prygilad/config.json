@@ -15,7 +15,8 @@
             "info":"{prygila_nimi} ({prygila_liik})\\nStaatus: **{on_suletud__kl_onsuletud__kirjeldus}**\\nOmavalitsus: **{maakond}, {omavalitsus}**\\nL-EST'97 asukoht: **{e}**,**{n}**\\nKäitajad:\\n{kaitajad}",
             "graph": {
                 "x": "ladestatud_tonnid", "y":"aastad",
-                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta",
+                "titleTemplate": "{label}. aastal ladestati kokku {value} tonni"
             },
             "minZoom": 3,
             "maxZoom": 13,
@@ -52,7 +53,8 @@
             "info":"{prygila_nimi} ({prygila_liik})\\nStaatus: **{on_suletud__kl_onsuletud__kirjeldus}**\\nOmavalitsus: **{maakond}, {omavalitsus}**\\nL-EST'97 asukoht: **{e}**,**{n}**\\nKäitajad:\\n{kaitajad}",
             "graph": {
                 "x": "ladestatud_tonnid", "y":"aastad",
-                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta",
+                "titleTemplate": "{label}. aastal ladestati kokku {value} tonni"
             },
             "minZoom": 3,
             "maxZoom": 13,
