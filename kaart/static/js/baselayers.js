@@ -31,7 +31,7 @@ var orthotile = L.tileLayer(
   kaarttile = L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{-y}.png', {
       minZoom:0,
-      maxZoom: 14,
+      maxZoom: 13,
       continuousWorld: false,
       noWrap: false,
       attribution: 'Aluskaart: <a href="http://www.maaamet.ee" target="_blank" rel="noopener noreferrer">Maa-Amet</a>'
