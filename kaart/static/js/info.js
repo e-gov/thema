@@ -28,7 +28,8 @@ L.Control.Graph = L.Control.extend({
             barPadding = this.barPadding,
             labelWidth = this.labelWidth
             data = this.data,
-            id = 'graph-' + this.id;
+            id = 'graph-' + this.id,
+            titleTemplate = this.options.setup.titleTemplate || "{value}";
 
         this.height = height = ((barHeight + barPadding) * data.length + barPadding) + axisMargin;
 
@@ -78,7 +79,20 @@ L.Control.Graph = L.Control.extend({
             .attr("height", barHeight)
             .attr("width", function(d){
                 return scale(d.value);
-            });
+            })
+            .on("mouseover", function() {
+                L.DomUtil.addClass(this, 'hover-Polygon');
+            })
+            .on("mouseout", function() {
+                if (L.DomUtil.hasClass(this, 'hover-Polygon')) {
+                    L.DomUtil.removeClass(this, 'hover-Polygon');
+                }
+            })
+            .append("title")
+                .text(function(data) {
+                    return L.Util.template(titleTemplate, data);
+                })
+            ;
 
         axis = svg.insert("g",":first-child")
             .attr("class", "axisHorizontal")

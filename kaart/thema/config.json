@@ -250,7 +250,8 @@
             "info":"<b>{maakond}, {omavalitsus}</b><br>{prygila_liik}",
             "graph": {
                 "x": "ladestatud_tonnid", "y":"aastad",
-                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta",
+                "titleTemplate": "{value} tonni"
             },
             "minZoom": 3,
             "maxZoom": 13,
@@ -277,7 +278,8 @@
             "info":"<b>{maakond}, {omavalitsus}</b><br>{prygila_liik}",
             "graph": {
                 "x": "ladestatud_tonnid", "y":"aastad",
-                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta"
+                "xLabel": "Ladestatud kogus (t)", "yLabel": "Aasta",
+                "titleTemplate": "{label}. aastal ladestati kokku\n{value} tonni"
             },
             "minZoom": 3,
             "maxZoom": 13,
