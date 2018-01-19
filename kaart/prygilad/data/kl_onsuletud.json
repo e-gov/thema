@@ -1,1 +1,1 @@
-{"type":"FeatureCollection","totalFeatures":"2","features":[{"type":"Feature","id":"kl_onsuletud.1","geometry":null,"properties":{"kood":"1", "kirjeldus":"Suletud"}},{"type":"Feature","id":"kl_onsuletud.0","geometry":null,"properties":{"kood":"0", "kirjeldus":"Avatud"}}]}
+{"type":"FeatureCollection","totalFeatures":"2","features":[{"type":"Feature","id":"kl_onsuletud.1","geometry":null,"properties":{"kood":"1", "kirjeldus":"Suletud"}},{"type":"Feature","id":"kl_onsuletud.0","geometry":null,"properties":{"kood":"0", "kirjeldus":"Töötav"}}]}

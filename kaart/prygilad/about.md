@@ -1,5 +1,5 @@
 Prügilate kaardikihil on kuvatud alates 2001 prügilatega seonduv avalik info.
-Kaardikihilt on leitav töötavate ja suletud prügilate asukohad ja
+Kaardikihilt on leitavad töötavate ja suletud prügilate asukohad ja
 aastate lõikes käitajad ning ladestatud kogused.
 
 Tegutsevate ja suletud prügilate kaardikihte  saab sisse ja välja lülitada
