@@ -283,6 +283,8 @@ L.Map.include({
             var layer = layers[layerId];
             if (layer.options && layer.options.info) {
                 layer.options.info.unfreeze();
+            }
+            if (layer._clearMarked) {
                 layer._clearMarked(layerId);
             }
         }

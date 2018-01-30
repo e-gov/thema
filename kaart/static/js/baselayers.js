@@ -9,6 +9,7 @@
   // ortofoto
 var orthotile = L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom:0,
       maxZoom: 13,
       continuousWorld: false,
@@ -18,6 +19,7 @@ var orthotile = L.tileLayer(
   ),
   orthowms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/fotokaart', {
+      pane:'baselayersPane',
       layers: 'EESTIFOTO',
       minZoom: 14,
       maxZoom: 20,
@@ -30,6 +32,7 @@ var orthotile = L.tileLayer(
 
   kaarttile = L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/kaart/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom:0,
       maxZoom: 13,
       continuousWorld: false,
@@ -39,6 +42,7 @@ var orthotile = L.tileLayer(
   ),
   kaartwms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/kaart', {
+      pane:'baselayersPane',
       continuousWorld : false,
       layers: 'CORINE,BAASKAART,KAART24,HALDUSPIIRID,TEED,KYLAD,KAART24L',
       minZoom: 14,
@@ -52,6 +56,7 @@ var orthotile = L.tileLayer(
 
   hybrid_orthotile = L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/foto/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom : 0,
       maxZoom : 13,
       continuousWorld : false,
@@ -60,6 +65,7 @@ var orthotile = L.tileLayer(
   ),
   hybrid_texttile = L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/hybriid/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom : 0,
       maxZoom : 13,
       continuousWorld : false,
@@ -69,6 +75,7 @@ var orthotile = L.tileLayer(
 
   hybrid_orthowms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/fotokaart', {
+      pane:'baselayersPane',
       layers: 'EESTIFOTO',
       minZoom: 14,
       maxZoom: 20,
@@ -78,6 +85,7 @@ var orthotile = L.tileLayer(
   ),
   hybrid_textwms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/fotokaart', {
+      pane:'baselayersPane',
       layers: 'HYBRID',
       transparent: true,
       format: 'image/png',
@@ -94,6 +102,7 @@ var orthotile = L.tileLayer(
 
   reljeeftile = new L.tileLayer(
     'http://tiles.maaamet.ee/tm/s/1.0.0/reljeef/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom:0,
       maxZoom: 13,
       continuousWorld: false,
@@ -103,6 +112,7 @@ var orthotile = L.tileLayer(
   ),
   reljeefwms = L.tileLayer.wms(
     'http://kaart.maaamet.ee/wms/fotokaart', {
+      pane:'baselayersPane',
       layers: 'reljeef',
       minZoom: 14,
       maxZoom: 20,
@@ -115,6 +125,7 @@ var orthotile = L.tileLayer(
   // mustvalge aluskaart
   blacktile = L.tileLayer(
     'http://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/baasandmed:black@EPSG:3301@png/{z}/{x}/{-y}.png', {
+      pane:'baselayersPane',
       minZoom:0,
       maxZoom: 14,
       continuousWorld: false,
@@ -124,6 +135,7 @@ var orthotile = L.tileLayer(
   ),
   blackwms = L.tileLayer.wms(
     'http://gsavalik.envir.ee/geoserver/baasandmed/ows', {
+      pane:'baselayersPane',
       layers: 'baasandmed:black',
       transparent: true,
       format: 'image/png',
@@ -186,4 +198,6 @@ function updateMap(options) {
   layerControl.options.radioGroups = radioGroups;
   aboutWindow.options.collapsed = aboutOnClick == false;
   aboutWindow.options.title = title;
+  map.createPane('baselayersPane');
+  map.getPane('baselayersPane').style.zIndex = 1;
 }

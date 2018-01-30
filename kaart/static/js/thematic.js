@@ -725,12 +725,99 @@ L.tileLayer.geoJson = function(urlTemplate, options) {
     return new L.TileLayer.GeoJSON(urlTemplate, options);
 }
 
+L.HeatmapOverlay = HeatmapOverlay.include({
+    options: {
+        pane: 'heatPane'
+    },
+    onAdd: function(map) {
+        var size = map.getSize();
+
+        this._map = map;
+
+        this._width = size.x;
+        this._height = size.y;
+
+        this._el.style.width = size.x + 'px';
+        this._el.style.height = size.y + 'px';
+        this._el.style.position = 'absolute';
+
+        this._origin = this._map.layerPointToLatLng(new L.Point(0, 0));
+
+        this.getPane().appendChild(this._el);
+
+        if (!this._heatmap) {
+          this._heatmap = h337.create(this.cfg);
+        }
+
+        // this resets the origin and redraws whenever
+        // the zoom changed or the map has been moved
+        map.on('moveend', this._reset, this);
+        map.on('zoomstart', this._hide, this);
+        map.on('zoomend', this._show, this);
+        this._draw();
+    },
+    onRemove: function (map) {
+      // remove layer's DOM elements and listeners
+      this.getPane().removeChild(this._el);
+
+      map.off('moveend', this._reset, this);
+      map.off('zoomstart', this._hide, this);
+      map.off('zoomend', this._show, this);
+    },
+    _hide: function() {
+        if (!this._el) {
+            return;
+        }
+        // et pilt ei jääks sissezoomi ajaks ripnema
+        this._el.style.visibility = 'hidden';
+        return this;
+    },
+    _show: function(e) {
+        if (!this._el) {
+            return;
+        }
+        // juhul kui min/max z lubab, siis näitame pilti jälle
+        var zoom = this._map.getZoom(),
+            minZoom = this.cfg.minZoom || this._map.getMinZoom(),
+            maxZoom = this.cfg.maxZoom || this._map.getMaxZoom();
+        if (minZoom <= zoom && maxZoom >= zoom) {
+            this._el.style.visibility = 'visible';
+        }
+        return this;
+    }
+});
+
+L.heatmapOverlay = function(urlTemplate, options) {
+    return new L.HeatmapOverlay(options);
+}
+
 L.GeoJSON.URL = L.GeoJSON.extend({
+    setUpLayer: function(data, options) {
+        if (options.styleDescriptor && options.styleDescriptor.type == 'heatmap') {
+            var style = options.styleDescriptor
+            L.Util.setOptions(this, options);
+            this._drawHeatmap(data, style);
+        } else if (options.styleDescriptor && options.styleDescriptor.type == 'hex') {
+            var style = options.styleDescriptor;
+            L.Util.setOptions(this, options);
+            var cls = this;
+            this.drawGrid(data, style).then(
+                function(gridded)  {
+                    L.GeoJSON.prototype.initialize.call(cls, gridded, options);
+                    return gridded;
+                }
+            );
+        } else {
+            L.GeoJSON.prototype.initialize.call(this, data, options);
+        }
+        this.marked = [];
+    },
+
     initialize: function(url, options) {
         var cls = this;
         this.get(url).then(function(data){
             if (!options.join) {
-                L.GeoJSON.prototype.initialize.call(cls, data, options);
+                cls.setUpLayer(data, options);
             } else {
                 L.Util.setOptions(cls, options);
                 cls.data = {};
@@ -753,23 +840,48 @@ L.GeoJSON.URL = L.GeoJSON.extend({
             console.error(error);
         });
     },
+    onAdd: function(map) {
+        L.GeoJSON.prototype.onAdd.call(this, map);
+        this._map.on('zoomend', this._showHide, this);
+        if (this._heatCanvas) {
+            map.addLayer(this._heatCanvas);
+        }
+    },
+    onRemove: function() {
+        L.GeoJSON.prototype.onRemove.call(this, map);
+        this._map.off('zoomend', this._showHide, this);
+        if (this._heatCanvas) {
+            map.removeLayer(this._heatCanvas);
+        }
+    },
+    _showHide: function(e) {
+        var zoom = this._map.getZoom(),
+            minZoom = this.options.minZoom,
+            maxZoom = this.options.maxZoom,
+            renderer = this._map.getRenderer(this);
+        if (zoom > maxZoom || zoom < minZoom) {
+            if (renderer && renderer._container) {
+                renderer._container.style.visibility = 'hidden';
+            }
+        } else {
+            if (renderer && renderer._container) {
+                renderer._container.style.visibility = 'visible';
+            }
+        }
+    },
     get: function(url) {
-        return new Promise(function(resolve, reject) {
-            fetch(url)
-                .then(function(response) {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    reject(Error(
-                        L.Util.template(
-                            'GET {url} returned HTTP {status} ({statusText})',
-                            response
-                        )
-                    ));
-                }).then(function(data) {
-                    resolve(data);
-                });
-        });
+        return fetch(url)
+            .then(function(response) {
+                if (response.ok) {
+                    return response.json();
+                }
+                return Promise.reject(Error(
+                    L.Util.template(
+                        'GET {url} returned HTTP {status} ({statusText})',
+                        response
+                    )
+                ));
+            })
     },
     _setLayerStyle: function(layer, style) {
         if (typeof style === 'function') {
@@ -785,6 +897,154 @@ L.GeoJSON.URL = L.GeoJSON.extend({
     getValueFor: function(val) {
         if (!this.data) {return {}};
         return this.data[val];
+    },
+    _clearMarked: function(layerId) {
+        var marked = this.marked || [];
+        for (var i=0; i < marked.length; i++) {
+            var featureMarker = marked[i];
+            featureMarker.removeFrom(this._map);
+        }
+        this.marked = [];
+    },
+    _getHeatmapCanvas: function(style) {
+        if (!this._heatCanvas) {
+            var config = {
+                gradient: style.gradient,
+                radius: style.radius || 3,
+                maxOpacity: style.maxOpacity || 0.8,
+                scaleRadius:style.scaleRadius || true,
+                useLocalExtrema:style.useLocalExtrema || false,
+                latField:"lat",
+                lngField:"lng",
+                valueField:"count",
+                minZoom: this.options.minZoom,
+                maxZoom: this.options.maxZoom
+            };
+            var hCanvas = this._heatCanvas = L.heatmapOverlay(null, config);
+            this._attachInteraction(hCanvas);
+            if (this._map) {
+                hCanvas.addTo(this._map);
+            }
+        }
+        return this._heatCanvas;
+    },
+
+    _drawHeatmap: function(data, style) {
+
+        var hm = this._getHeatmapCanvas(style.values),
+            features = [],
+            key = style.key || "count",
+            max = style.max || 1,
+            min = style.min || 0;
+
+        data.features.filter(function(feature) {
+            return feature.geometry.type == 'Point' && feature.properties[key] >= min
+        }).forEach(function(feature) {
+            features.push({
+                lng:feature.geometry.coordinates[0],
+                lat:feature.geometry.coordinates[1],
+                count:feature.properties[key]
+            });
+        });
+        hm.setData({max:max, min:min, data:features});
+    },
+    _attachInteraction: function(hCanvas) {
+        // see on tehtav, kuid tulemus on kaheldav..
+        // pigem võiks value asemel näidata infoaknas hoopis legendi??
+//        hCanvas._el.onmousemove = function(e) {
+//            var x = e.layerX,
+//                y = e.layerY,
+//                value = hCanvas._heatmap.getValueAt({x:x, y:y});
+//            console.log(value);
+//        };
+    }
+});
+
+L.GeoJSON.URL.include({
+    drawGrid: function(data, style) {
+        var key = style.key,
+            cls = this;
+        return new Promise(function(resolve, reject) {
+            cls.classify(data, style)
+                .then(
+                    function(response) {
+                        var data = response.data,
+                            style = response.style,
+                            clskey = response.clskey;
+                        return cls.downSample(data, style, clskey);
+                    }
+                )
+                .then(
+                    function(response) {
+                        var data = response.data,
+                            style = response.style,
+                            cellSize = style.cellSize,
+                            weight = style.idwWeight,
+                            key = style.key,
+                            type = style.type,
+                            grid = turf.interpolate(
+                                data,
+                                cellSize,
+                                {gridType:type, units:'meters', property:key,
+                                    weight:weight});
+                        // Selle teadmise peaks ka kuskilt saama, kas on vaja.
+                        //turf.featureEach(grid, function(feature) {
+                        //    feature.properties[key] = Math.round(feature.properties[key] * 100) / 100
+                        //});
+                        return resolve(grid);
+                    }
+                );
+        });
+    },
+    classify: function(data, style) {
+        return new Promise(function(resolve, reject) {
+            var key = style.key,
+                clskey = L.Util.template('{key}{suffix}', {key:key, suffix: '_cls'}),
+                breaks = style.breaks;
+            turf.featureEach(data, function(feature) {
+                var cls = -1;
+                for (var i=1;i<breaks.length;i++) {
+                    var min = breaks[i-1],
+                        max = breaks[i];
+                    if (feature.properties[key] > min && feature.properties[key] <= max) {
+                        cls = i-1;
+                    }
+                }
+                if (cls == -1) {
+                   var max = breaks[breaks.length - 1];
+                   if (feature.properties[key] > max) {
+                       cls = breaks.length - 1
+                   }
+               }
+               feature.properties[clskey] = cls;
+            });
+            return resolve({data:data, style:style, clskey:clskey});
+        });
+    },
+    downSample: function(data, style, clskey) {
+        return new Promise(function(resolve, reject) {
+            var features = [],
+                filter = {},
+                breaks = style.breaks;
+            for (var i=0;i<breaks.length;i++) {
+                filter[clskey] = i;
+                var fc = turf.getCluster(data, filter),
+                    clSize = fc.features.length;
+                // see peaks olema juhitav - kas tahan sämplimist või mitte.
+                if (clSize > 1500) {
+                    fc = turf.sample(fc, 1000);
+                    clSize = 1000;
+                }
+                fc = turf.clustersDbscan(
+                    fc,
+                    20, // võiks sõltuda (nagu ka minPoints) kokku klassis olevate objektide arvust?
+                    {units:"kilometers", minPoints:5, mutate:true}
+                );
+                features.push.apply(features, turf.getCluster(fc, {dbscan:'core'}).features);
+                features.push.apply(features, turf.getCluster(fc, {dbscan:'edges'}).features); //??
+            }
+        return resolve({data:turf.featureCollection(features), style:style});
+        });
     }
 });
 
@@ -834,6 +1094,8 @@ var _thematicLayers = {
                     var key = style.key,
                         val = feature.properties[key];
                         return style.values[val] || {};
+                } else if (style.type == "heatmap") {
+                    return;
                 }
                 return {};
             },
@@ -861,6 +1123,33 @@ var _thematicLayers = {
                     var key = style.key,
                         val = feature.properties[key];
                     return style.values[val] || {};
+                } else if (style.type == "heatmap") {
+                    return;
+                } else if (style.type == "hex") {
+                    var key = style.key,
+                        min = style.min,
+                        max = style.max,
+                        values = {},
+                        val = feature.properties[key];
+                        Object.keys(style.values).forEach(function(key) {
+                            values[key] = style.values[key];
+                        });
+                        var ratio = val / (max - min),
+                            gradient = values.gradient;
+                        var minEnd = Object.keys(gradient).filter(function(v) {
+                                return v < ratio
+                            }),
+                            maxEnd = Object.keys(gradient).filter(function(v) {
+                                return v >= ratio
+                            }),
+                            // eeldame, et gradiendi stopid olid järjekorras 0.1->1.0 järjekorras.
+                            minRatio = minEnd[minEnd.length-1],
+                            maxRatio = maxEnd[0],
+                            minColor = gradient[minRatio] || gradient[maxRatio],
+                            maxColor = gradient[maxRatio] || gradient[minRatio],
+                            r = ratio / (maxRatio-minRatio) || 1;
+                        values.fillColor = minColor == maxColor ? minColor : maxColor.colorGradient(minColor, r);
+                    return values;
                 }
                 return {};
             },
@@ -900,6 +1189,16 @@ var _thematicLayers = {
                             );
                         }
                     });
+                    layer.on('click', function(e) {
+                        var _layer = e.target;
+                        if (_layer.options && _layer.options.info) {
+                            L.DomEvent.stop(e);// don't propagate to map underneath
+                            var markMe = _layer.options.hoverClassNamePrefix !== undefined ? true : false;
+                            if (!markMe) {
+                                return;
+                            }
+                        }
+                    }, this);
                 }
             },
             "filter": function(feature) {
