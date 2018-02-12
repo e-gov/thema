@@ -813,6 +813,7 @@ L.GeoJSON.URL = L.GeoJSON.extend({
             var cls = this;
             this.drawDensityLines(data, style).then(
                 function(unknownPleasures)  {
+                    // https://en.wikipedia.org/wiki/Unknown_Pleasures :)
                     L.GeoJSON.prototype.initialize.call(cls, unknownPleasures, options);
                     return unknownPleasures;
                 }
@@ -1159,6 +1160,8 @@ var _thematicLayers = {
                         val = feature.properties[key];
                         return style.values[val] || {};
                 } else if (style.type == "heatmap") {
+                    return;
+                } else if (style.type == "densitylines") {
                     return;
                 }
                 return {};

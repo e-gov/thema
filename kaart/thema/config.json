@@ -26,36 +26,6 @@
             }
         },
         {
-            "layername": "Interpoleeritud hexgrid",
-            "url": "./data/example/emissions-test.geojson",
-            "type": "geojson.url",
-            "srid": 4326,
-            "isVisible": false,
-            "hover":true,
-            "info":"<b>NO<small>x</small></b> kontsentratsioon : {nox} (mingiühik/mingiteineühik)",
-            "minZoom": 3,
-            "style": {
-                "type": "hex",
-                "key":"nox",
-                "min": 0.1,
-                "max": 10,
-                "breaks": [-1, 0, 0.2, 0.4, 0.6, 1, 10],
-                "cellSize": 10000,
-                "idwWeight": 3,
-                "values": {
-                    "fillOpacity": 0.7,
-                    "opacity": 0.5,
-                    "weight": 0.1,
-                    "color": "black",
-                    "gradient": {
-                        "0.1":"#F4D907",
-                        "0.25":"#B71919",
-                        "0.9":"#050404"
-                    }
-                }
-            }
-        },
-        {
             "layername": "GeoJSON kahhel, klassifitseeritud",
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/eelis:kr_puurkaev@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
