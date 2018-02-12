@@ -8,7 +8,7 @@
             "url": "./data/example/emissions-test.geojson",
             "type": "geojson.url",
             "srid": 4326,
-            "isVisible": false,
+            "isVisible": true,
             "hover":false,
             "minZoom": 3,
             "maxZoom": 10,
@@ -30,7 +30,7 @@
             "url": "./data/example/emissions-test.geojson",
             "type": "geojson.url",
             "srid": 4326,
-            "isVisible": true,
+            "isVisible": false,
             "hover":true,
             "info":"<b>NO<small>x</small></b> kontsentratsioon : {nox} (mingiühik/mingiteineühik)",
             "minZoom": 3,
@@ -103,7 +103,7 @@
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:ristipuud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": true,
+            "isVisible": false,
             "hover":true,
             "info":"<b>{nimi}</b></br>{kirjeldus}\\nFotod: {fotod}",
             "minZoom": 3,
@@ -326,7 +326,7 @@
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/keskkonnainfo:prygilad_agregeeritud@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": true,
+            "isVisible": false,
             "hover":true,
             "info":"<b>{maakond}, {omavalitsus}</b><br>{prygila_liik}",
             "graph": {
@@ -353,10 +353,34 @@
             "url": "https://gsavalik.envir.ee/geoserver/gwc/service/tms/1.0.0/eelis:kr_jarv@EPSG:3301@geojson/{z}/{x}/{-y}.geojson",
             "type": "geojson.tile",
             "srid": 3301,
-            "isVisible": true,
+            "isVisible": false,
             "minZoom": 0,
             "hover":true,
             "info":"**{nimi}**"
+        },
+        {
+            "layername": "Density Lines",
+            "url": "./data/example/emissions-test.geojson",
+            "type": "geojson.url",
+            "srid": 4326,
+            "isVisible": true,
+            "hover":true,
+            "minZoom": 3,
+            "style": {
+                "type": "densitylines",
+                "size": [367, 238],
+                "denominator": 10000,
+                "slope": 10,
+                "key": "population",
+                "values": {
+                    "color": "black",
+                    "opacity": 1,
+                    "fill": true,
+                    "fillColor": "url(#pizelex)",
+                    "fillOpacity": 1,
+                    "weight": 0.1
+                }
+            }
         }
     ]
 }

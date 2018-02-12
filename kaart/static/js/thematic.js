@@ -807,6 +807,16 @@ L.GeoJSON.URL = L.GeoJSON.extend({
                     return gridded;
                 }
             );
+        } else if (options.styleDescriptor && options.styleDescriptor.type == 'densitylines') {
+            var style = options.styleDescriptor;
+            L.Util.setOptions(this, options);
+            var cls = this;
+            this.drawDensityLines(data, style).then(
+                function(unknownPleasures)  {
+                    L.GeoJSON.prototype.initialize.call(cls, unknownPleasures, options);
+                    return unknownPleasures;
+                }
+            );
         } else {
             L.GeoJSON.prototype.initialize.call(this, data, options);
         }
@@ -961,6 +971,60 @@ L.GeoJSON.URL = L.GeoJSON.extend({
 });
 
 L.GeoJSON.URL.include({
+    drawDensityLines: function(data, style) {
+        var w = style.size[0],
+            h = style.size[1],
+            denominator = style.denominator || 10,
+            slope = style.slope || 5,
+            saturateAt = style.saturateAt || 0.1,
+            key = style.key,
+            lines = [];
+        return new Promise (function(resolve, reject) {
+            for (var i=0;i<h;i++) {
+                var features = data.features.slice(i*w, i*w+w),
+                    coords = features.map(function(feature, j, arr) {
+                        var val = feature.properties[key],
+                            prv = arr[j-1] ? arr[j-1].properties[key] : 0,
+                            nxt = arr[j+1] ? arr[j+1].properties[key] : 0,
+                            nxtNxt = arr[j+2] ? arr[j+2].properties[key] : 0,
+                            prvPrv = arr[j-2] ? arr[j-2].properties[key] : 0,
+                            // val on meil täiesti suvaline väärtus,
+                            // mille liidame otsa y-koordinaadile.
+                            val = slope * (val / denominator),
+                            sign = val < 0 ? -1 : 1
+                            val = Math.abs(val) > saturateAt ? sign * saturateAt + val * 0.01 : val,
+                            coordinates = feature.geometry.coordinates;
+                        if (val == 0  && (prv == 0 && prvPrv == 0 && nxt == 0 && nxtNxt == 0)) {
+                            // kui praeguse asukoha väärtus == 0 ja ka eelmine,
+                            // üleeelmine, järgmine ja ülejärgmine on 0 siis
+                            // seda punkti me ei lisa.
+                            return;
+                        } else if (val != 0 && (j == 0 || j == w - 1) ) {
+                            // juhul kui punkti väärtus != 0 ja asume vasakul/paremas
+                            // servas
+                            return [coordinates[0], coordinates[1], 0];
+                        }
+                        return [coordinates[0], coordinates[1] + val, feature.properties[key]];
+                    });
+                    var _coords = [];
+                    coords.forEach(function(e, idx, arr) {
+                         var nxt = arr[idx+1];
+                         if (e !== undefined) {
+                             _coords.push(e);
+                         }
+                         if (nxt === undefined && _coords.length > 2) {
+                             // joonsitame polügoni, sest sellele saab anda
+                             // ka sisemuse värvi.
+                             lines.push(turf.lineToPolygon(turf.lineString(_coords)));
+                             //lines.push(turf.lineString(_coords);
+                             _coords = [];
+                         }
+                    });
+            }
+            lines = lines.reverse();
+            return resolve(lines);
+        });
+    },
     drawGrid: function(data, style) {
         var key = style.key,
             cls = this;
@@ -1150,12 +1214,15 @@ var _thematicLayers = {
                             r = ratio / (maxRatio-minRatio) || 1;
                         values.fillColor = minColor == maxColor ? minColor : maxColor.colorGradient(minColor, r);
                     return values;
+                } else if (style.type == "densitylines") {
+                    return style.values;
                 }
                 return {};
             },
             "onEachFeature": function(feature, layer) {
                 // @TODO: L.TileLayer.GeoJSON toimub see `hover` klassinime
                 // lisamine mujal. liiguta siit ka see välja!
+
                 if (layer.options.hoverClassNamePrefix) {
                     var geomType = feature.geometry.type.replace('Multi', ''),
                         _hoverClassName = layer.options.hoverClassNamePrefix + "-" + geomType;
